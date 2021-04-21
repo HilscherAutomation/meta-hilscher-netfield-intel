@@ -1,0 +1,19 @@
+Usage:
+======
+
+1. Activate CSM Support (Advanced / CSM Configuration / CSM Support = enabled) in NIOT-E-TIJCX-GB BIOS
+2. Activate network boot support
+    * Advanced / CSM Configuration / Network = enabled
+    * Advanced / CSM Configuration / Onboard LAN PXE = LAN1
+    * Boot /  Boot mode select = LEGACY
+    * Boot / Boot Option #1 = Network:IBA GE Slot 1
+3. Copy appropriate bundled kernel image (e.g. bzImage-initramfs--4.14.170+git0+a889c43359_a5ba91f90e-r0-niot-e-tijcx-gb-20200804050921.bin) into this directory with name "kernel"
+4. Setup bootp / TFTP Server, serving this directory
+5. (optional) Edit command line in "pxelinux.cfg/default" according to your needs (e.g. NFS server address or platform name)
+6. Place production scripts in this folder
+7. Bootup system and wait
+
+NOTE: After production is completed, steps 1 and 2 must be reverted
+ * Advanced / CSM Configuration / CSM Support = disabled
+ * Boot /  Boot mode select = UEFI
+ * Boot / Boot Option #1 = USB Device

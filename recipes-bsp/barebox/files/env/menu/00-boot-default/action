@@ -1,0 +1,6 @@
+#!/bin/sh
+
+global.linux.bootargs.console=""
+boot
+
+readline "Booting failed. Press any key to continue" ignore

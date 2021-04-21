@@ -1,0 +1,22 @@
+mount -t efivarfs none /sys/firmware/efi/efivars
+
+mkdir -p /tmp
+
+secure_boot=`efi-keytool | grep "Secure boot is on"`
+if [ $? -ne 0 ]; then
+    echo "!!!!Installing secure boot keys, as secure boot is disabled!!!!"
+
+    echo -n "Installing DB... "
+    efi-updatevar -f /etc/uefikeys/db.auth db
+    [ $? -eq 0 ] && echo "done"
+
+    echo -n "Installing KEK... "
+    efi-updatevar -f /etc/uefikeys/kek.auth KEK
+    [ $? -eq 0 ] && echo "done"
+
+    echo -n "Installing PK... "
+    efi-updatevar -f /etc/uefikeys/pk.auth PK
+    [ $? -eq 0 ] && echo "done"
+fi
+
+umount /sys/firmware/efi/efivars

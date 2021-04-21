@@ -1,0 +1,28 @@
+Compilation fails (probably related to used nss version) with following error:
+| /build/build_intel/tmp/work/x86_64-linux/pesign-native/113-r0/recipe-sysroot-native/usr/include/nss3/certt.h:445:5: error: large integer implicitly truncated to unsigned type [-Werror=ove
+rflow]
+|      (NS_CERT_TYPE_SSL_CLIENT | NS_CERT_TYPE_SSL_SERVER | NS_CERT_TYPE_EMAIL | \
+|      ^
+| efikeygen.c:211:23: note: in expansion of macro ‘NS_CERT_TYPE_APP’
+|   unsigned char type = NS_CERT_TYPE_APP;
+|                        ^~~~~~~~~~~~~~~~
+
+diff -aurN a/src/efikeygen.c b/src/efikeygen.c
+--- a/src/efikeygen.c	2020-04-14 13:19:05.222183850 +0200
++++ b/src/efikeygen.c	2020-04-14 13:27:22.458786334 +0200
+@@ -208,13 +208,13 @@
+ add_cert_type(cms_context *cms, void *extHandle, int is_ca)
+ {
+ 	SECItem bitStringValue;
+-	unsigned char type = NS_CERT_TYPE_APP;
++	unsigned type = NS_CERT_TYPE_APP;
+ 
+ 	if (is_ca)
+ 		type |= NS_CERT_TYPE_SSL_CA |
+ 			NS_CERT_TYPE_EMAIL_CA |
+ 			NS_CERT_TYPE_OBJECT_SIGNING_CA;
+-	bitStringValue.data = (unsigned char *)&type;
++	bitStringValue.data = (unsigned char*)&type;
+ 	bitStringValue.len = sizeof (type);
+ 
+ 	SECStatus status;

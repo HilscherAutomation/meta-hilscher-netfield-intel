@@ -1,0 +1,15 @@
+[Unit]
+Description=cifX TUN Device Server
+After=network-online.target
+
+[Service]
+ExecStartPre=/sbin/modprobe uio_netx
+ExecStart=/opt/cifx/example/cifxtun -dd
+ExecStopPost=/sbin/modprobe -r uio_netx
+
+# Lower priority so cpu time is passed early to other processes if required
+Nice=10
+#CPUSchedulingPolicy=idle
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,16 @@
+Fix some "bad" BT5.0 sticks that need some quirks, but default driver does not activate them
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index 44bccb1..fb0eaeb 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -2990,6 +2990,10 @@ static int btusb_probe(struct usb_interface *intf,
+ 		/* Fake CSR devices with broken commands */
+ 		if (bcdDevice <= 0x100 || bcdDevice == 0x134)
+ 			hdev->setup = btusb_setup_csr;
++		else if (bcdDevice == 0x8891) {
++			clear_bit(HCI_QUIRK_RESET_ON_CLOSE, &hdev->quirks);
++			set_bit(HCI_QUIRK_BROKEN_STORED_LINK_KEY, &hdev->quirks);
++		}
+ 
+ 		set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &hdev->quirks);
+ 	}

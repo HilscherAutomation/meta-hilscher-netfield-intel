@@ -1,0 +1,9 @@
+menu title production-boot
+
+label network-boot
+      kernel kernel
+      append root=/dev/nfs ip=dhcp nfsroot=192.168.0.10:/srv/nfs,noatime,nolock,rw,async rootwait platform=NIOT-E-TIJCX-GB provisioning=1 loglevel=4
+
+default network-boot
+timeout 100
+prompt 0

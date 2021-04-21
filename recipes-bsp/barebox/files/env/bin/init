@@ -1,0 +1,46 @@
+#!/bin/sh
+
+export PATH=/env/bin
+
+#clear screen
+echo -e '\e[2J'
+
+global boot.default
+global linux.bootargs.base
+global linux.bootargs.console
+#linux.bootargs.dyn.* will be cleared at the beginning of boot
+
+if [ -d /boot/boot/loader/entries ]; then
+    # signature verification
+    for file in /boot/boot/loader/entries/*.conf; do
+	verify_signature /env/pubkey.dtb ${file} ${file}.sig
+	if [ $? -ne 0 ]; then
+	    echo "Error verifying signature for ${file}."
+	    echo "!!! DENYING BOOT !!!"
+	    while true; do
+		sleep 1
+	    done
+	fi
+    done
+
+    echo "Using BLSPEC on /boot"
+    boot -m -t 5 /boot/boot
+fi
+
+global.boot.default=default
+
+mkdir /system
+mount /dev/disk0.system /system
+global.bootm.image="/system/bzImage"
+global.linux.bootargs.base="@OVERLAYS@ rootflags=noatime overlayflags=noatime,discard ro bootCfg=LABEL=system/boot.cfg rootwait rootdelay=1 roottimeout=10 reboot=efi,warm no_ima loglevel=4 acpi_enforce_resources=lax firmware_class.path=/usr/local/lib/firmware"
+global.linux.bootargs.console=""
+
+echo "Press any key for boot menu."
+timeout -a 2 -v key
+autoboot="$?"
+
+if [ "$autoboot" = 0 ]; then
+        boot
+fi
+
+/env/menu/mainmenu

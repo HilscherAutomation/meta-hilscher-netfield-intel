@@ -1,0 +1,9 @@
+[Unit]
+Description=Display hotplugging daemon
+
+[Service]
+Type=simple
+ExecStart=/lib/systemd/display-hotplug.sh
+
+[Install]
+WantedBy=multi-user.target

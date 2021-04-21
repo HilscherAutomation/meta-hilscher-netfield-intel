@@ -1,0 +1,9 @@
+#!/bin/sh
+
+mkdir /rescue
+mount /dev/disk0.rescue /rescue
+global.bootm.image="/rescue/bzImage"
+global.linux.bootargs.base="ro bootCfg=LABEL=rescue/rboot.cfg rootwait rootdelay=1 roottimeout=10 reboot=efi,warm no_ima loglevel=4 acpi_enforce_resources=lax"
+boot
+
+readline "Booting failed. Press any key to continue" ignore

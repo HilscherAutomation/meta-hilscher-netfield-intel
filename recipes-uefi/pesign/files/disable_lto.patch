@@ -1,0 +1,21 @@
+Link-Time-Optimization results in the following error (possible yocto only):
+
+| lto1: error: variable tracking requested, but useless unless producing debug info [-Werror]
+| lto1: all warnings being treated as errors
+| lto-wrapper: fatal error: gcc returned 1 exit status
+| compilation terminated.
+| /build/build_intel/tmp/hosttools/ld: error: lto-wrapper failed
+| collect2: error: ld returned 1 exit status
+| /build/build_intel/tmp/work/x86_64-linux/pesign-native/113-r0/git/Make.rules:29: recipe for target 'libdpe.so' failed
+
+--- a/Make.defaults	2020-04-14 12:49:03.761101277 +0200
++++ b/Make.defaults	2020-04-14 12:56:20.869207158 +0200
+@@ -35,7 +35,7 @@
+ 
+ SOFLAGS	= -shared
+ clang_cflags =
+-gcc_cflags = -Wmaybe-uninitialized -grecord-gcc-switches -flto
++gcc_cflags = -Wmaybe-uninitialized -grecord-gcc-switches
+ cflags	= $(CFLAGS) $(ARCH3264) \
+ 	-Wall -Wextra -Wsign-compare -Wno-unused-result \
+ 	-Wno-unused-function -Wno-missing-field-initializers \

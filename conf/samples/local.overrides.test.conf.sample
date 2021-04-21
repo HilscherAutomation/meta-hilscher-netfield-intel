@@ -1,0 +1,25 @@
+# ------------------------------------------------------------------------------
+
+INHERIT += "testimage"
+
+# NOTE: python3-pexpect is requiered by TEST_TARGET HilscherTarget.
+TEST_TARGET ?= "HilscherTarget"
+
+#TEST_SUITES = "ping ssh syslog date dmesg systemd apparmor"
+TEST_SUITES = "ping ssh syslog date dmesg apparmor"
+
+TEST_SUITES_append += "hilscher"
+TEST_SUITES_append += "netfieldos"
+
+TEST_SERVER_IP ?= "tbd"
+TEST_TARGET_IP ?= "tbd"
+
+# The tests can be run automatically each time an image is built if you set
+#TESTIMAGE_AUTO = "1"
+
+# NOTE: User root is required by yocto test framework.
+#EXTRA_IMAGE_FEATURES_append += "debug-tweaks"
+#EXTRA_USERS_PARAMS_append += "usermod -s /bin/sh root;"
+
+# ------------------------------------------------------------------------------
+

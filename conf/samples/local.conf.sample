@@ -1,0 +1,38 @@
+# Version of local configuration file
+CONF_VERSION = "1"
+
+# Supported machines
+#MACHINE ?= "niot-e-tib100"
+#MACHINE ?= "niot-e-tijcx-gb"
+#MACHINE ?= "niot-e-vm-en"
+
+ACCEPT_FSL_EULA = "1"
+
+# Supported distros
+DISTRO ?= "netiot"
+
+# Parallelism Options
+BB_NUMBER_THREADS ?= "${@oe.utils.cpu_count()*1}"
+PARALLEL_MAKE ?= "-j ${@oe.utils.cpu_count()*1}"
+
+# Disk Space Monitoring during the build
+BB_DISKMON_DIRS = "\
+    STOPTASKS,${TMPDIR},1G,100K \
+    STOPTASKS,${DL_DIR},1G,100K \
+    STOPTASKS,${SSTATE_DIR},1G,100K \
+    ABORT,${TMPDIR},100M,1K \
+    ABORT,${DL_DIR},100M,1K \
+    ABORT,${SSTATE_DIR},100M,1K \
+"
+
+# Build should fail if a patch cannot apply
+PATCHRESOLVE = "noop"
+
+# ICECC support
+INHERIT_DISTRO_append += "icecc"
+# Disable icecc builds.
+ICECC_DISABLED ?= "1"
+# Disable fallthrough warning/error to prevents icecc build errors when using gcc 7.x.
+#TARGET_CFLAGS_append += "-Wimplicit-fallthrough=0"
+
+include local.overrides.conf

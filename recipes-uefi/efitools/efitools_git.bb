@@ -1,0 +1,32 @@
+require efitools.inc
+
+# The generated native binaries are used during native and target build
+DEPENDS += "${BPN}-native gnu-efi openssl"
+
+SRC_URI_append += "\
+    file://LockDown-enable-the-enrollment-for-DBX.patch \
+    file://LockDown-show-the-error-message-with-3-sec-timeout.patch \
+    file://Makefile-do-not-build-signed-efi-image.patch \
+    file://Build-DBX-by-default.patch \
+    file://LockDown-disable-the-entrance-into-BIOS-setup-to-re-.patch \
+    file://Fix-help2man-error.patch \
+"
+
+COMPATIBLE_HOST = '(i.86|x86_64).*-linux'
+
+inherit deploy
+
+EXTRA_OEMAKE_append += "\
+    INCDIR_PREFIX='${STAGING_DIR_TARGET}' \
+    CRTPATH_PREFIX='${STAGING_DIR_TARGET}' \
+    SIGN_EFI_SIG_LIST='${STAGING_BINDIR_NATIVE}/sign-efi-sig-list' \
+    CERT_TO_EFI_SIG_LIST='${STAGING_BINDIR_NATIVE}/cert-to-efi-sig-list' \
+    CERT_TO_EFI_HASH_LIST='${STAGING_BINDIR_NATIVE}/cert-to-efi-hash-list' \
+    HASH_TO_EFI_SIG_LIST='${STAGING_BINDIR_NATIVE}/hash-to-efi-sig-list' \
+    MYGUID='${UEFI_SIG_OWNER_GUID}' \
+    HELP2MAN_PROG_PREFIX='${STAGING_BINDIR_NATIVE}' \
+"
+
+RDEPENDS_${PN}_append += "\
+  mtools coreutils util-linux openssl libcrypto \
+"

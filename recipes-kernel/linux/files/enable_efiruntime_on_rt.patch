@@ -1,0 +1,12 @@
+EFI Runtime is disabled on newer RT kernels as there have been latency issues with some UEFI BIOSes. Revert patch to allow accessing efi variables (e.g. secure boot)
+--- a/drivers/firmware/efi/efi.c	2019-09-17 12:44:17.085755373 +0200
++++ b/drivers/firmware/efi/efi.c	2019-09-17 13:55:49.082793042 +0200
+@@ -68,7 +68,7 @@
+ 
+ struct workqueue_struct *efi_rts_wq;
+ 
+-static bool disable_runtime = IS_ENABLED(CONFIG_PREEMPT_RT);
++static bool disable_runtime;
+ static int __init setup_noefi(char *arg)
+ {
+ 	disable_runtime = true;

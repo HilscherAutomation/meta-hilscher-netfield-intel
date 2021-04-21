@@ -1,0 +1,29 @@
+The kernel scans an initramfs for possible microcode updates. This does not work for
+bundled initramfs systems via CONFIG_INITRAMFS_SOURCE. If no initramfs was found,
+fallback to a possible bundled initramfs.
+
+diff -aurN a/arch/x86/kernel/cpu/microcode/core.c c/arch/x86/kernel/cpu/microcode/core.c
+--- a/arch/x86/kernel/cpu/microcode/core.c	2020-07-01 13:54:59.050104123 +0200
++++ c/arch/x86/kernel/cpu/microcode/core.c	2020-07-02 13:01:11.572696812 +0200
+@@ -30,6 +30,7 @@
+ #include <linux/nmi.h>
+ #include <linux/fs.h>
+ #include <linux/mm.h>
++#include <linux/initrd.h>
+ 
+ #include <asm/microcode_intel.h>
+ #include <asm/cpu_device_id.h>
+@@ -316,6 +317,13 @@
+ 			start = *rr;
+ 	}
+ 
++	/* If no initramfs was found, try using a possible bundled one */
++	if(!start && __initramfs_size != 0) {
++		start = __initramfs_start;
++		size  = __initramfs_size;
++		pr_debug("Using bundled initramfs for microcode update");
++        }
++
+ 	return find_cpio_data(path, (void *)start, size, NULL);
+ #else /* !CONFIG_BLK_DEV_INITRD */
+ 	return (struct cpio_data){ NULL, 0, "" };
