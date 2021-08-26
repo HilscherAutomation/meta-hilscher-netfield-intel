@@ -33,7 +33,7 @@ elif [ "${image_type}" == "production_scan" ]; then
 
   # Copy production_scan_image squash fs
   cp ${ROOTFS} rootfs.img
-  openssl dgst -sha512 -sign ${signing_key} -out rootfs.img.sig rootfs.img
+  openssl dgst ${engine_params} -sha512 -sign ${signing_key} -out rootfs.img.sig rootfs.img
 fi
 
 if [ "${grub_default}" = "1" ]; then
@@ -51,7 +51,7 @@ options ${root_options} rootwait ${add_options} ${console_options} reboot=efi,wa
 linux bzImage
 EOF
 
-openssl dgst -sha512 -sign ${signing_key} -out boot/loader/entries/boot1.conf.sig boot/loader/entries/boot1.conf
+openssl dgst ${engine_params} -sha512 -sign ${signing_key} -out boot/loader/entries/boot1.conf.sig boot/loader/entries/boot1.conf
 
 # delete temporary extracted files
 rm -rf boot_tmp

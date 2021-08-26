@@ -1,4 +1,4 @@
-inherit pesign
+inherit uefisign sign-wrapper
 
 DEPENDS_append += "dtc-native openssl-native"
 
@@ -38,10 +38,8 @@ do_configure_append() {
 }
 
 do_install_append() {
-
-    pesign_files "/boot/efi/boot/bootx64.efi"
+    uefisign_files "/boot/efi/boot/bootx64.efi"
 }
-
 
 python do_generate_verification_keys() {
   import subprocess
@@ -66,11 +64,7 @@ python do_generate_verification_keys() {
       else:
           return x % m
 
-  
-  pubkey=subprocess.check_output(["openssl", "x509", "-pubkey", "-in", d.getVar("KEYS_IMAGE_SIGN_CERT", True), "-noout"])
-  key_file=os.path.join(d.getVar("B", True), "pubkey.pem")
-  with open(key_file, "w+") as f:
-    f.write(pubkey.decode("utf-8"))
+  key_file=os.path.join(d.getVar("SIGN_WRAPPER_KEY_DST"), d.getVar("PLATFORM_KEYNAME"), d.getVar("PLATFORM_KEYNAME") + ".pub")
 
   # Extract modulus and N0inv
   modulus = subprocess.check_output(["openssl", "rsa", "-pubin", "-in", key_file, "-modulus", "-noout"])

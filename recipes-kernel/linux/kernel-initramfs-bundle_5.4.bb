@@ -37,16 +37,16 @@ do_configure[noexec] = "1"
 do_compile[noexec] = "1"
 do_populate_sysroot[noexec] = "1"
 
-inherit pesign
+inherit uefisign
 
 do_install() {
   echo "Copying initramfs bundled kernel image from ${DEPLOY_DIR_IMAGE}..."
   install -m 0644 ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-initramfs-${MACHINE}.bin ${D}/${KERNEL_IMAGETYPE}
 
   # Signing the kernel ...
-  pesign_files /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}
+  uefisign_files /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}
   kernel=${D}/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}
-  openssl dgst -sha512 -sign ${KEYS_IMAGE_SIGN_PRIV} ${kernel} > ${kernel}.sig
+  openssl_sign_wrapper ${PLATFORM_KEYNAME} "sha512" ${kernel}
 
   echo bzImage=\"${KERNEL_IMAGETYPE}-initramfs-${KERNEL_VERSION}-${PR}\" > ${D}/${KERNEL_IMAGEDEST}/readme
 }

@@ -8,6 +8,7 @@ OVA_VENDOR_URL ??= "https://www.hilscher.com"
 
 OVA_TEMPLATE ??= "${NETFIELD_INTEL_BASE}/files/ovf.in"
 
+inherit sign-wrapper
 
 IMAGE_CMD_ova () {
     # create working directory
@@ -45,13 +46,18 @@ IMAGE_CMD_ova () {
     done
 
     # Sign ovf manually
-    openssl dgst -sha256 -hex \
-                 -sign ${KEYS_IMAGE_SIGN_PRIV} \
-                 ${WORKDIR}/ova-image/${IMAGE_NAME}.mf \
-                 | sed -e 's/RSA-SHA256/SHA256/' \
-                       -e 's;${WORKDIR}/ova-image/;;' \
-                 > ${WORKDIR}/ova-image/${IMAGE_NAME}.cert
-    cat ${KEYS_IMAGE_SIGN_CERT} >> ${WORKDIR}/ova-image/${IMAGE_NAME}.cert
+    setup_sign_wrapper_env "${PLATFORM_KEYNAME}"
+    export OPENSSL_SIGN_WRAPPER_ADD_OPTIONS="-hex"
+    openssl_sign_wrapper "${PLATFORM_KEYNAME}" "sha256" ${WORKDIR}/ova-image/${IMAGE_NAME}.mf
+    sed -e 's/RSA-SHA256/SHA256/' \
+        -e 's;${WORKDIR}/ova-image/;;' \
+        ${WORKDIR}/ova-image/${IMAGE_NAME}.mf.sig \
+        > ${WORKDIR}/ova-image/${IMAGE_NAME}.cert
+    rm ${WORKDIR}/ova-image/${IMAGE_NAME}.mf.sig
+
+    sign_wrapper_copy_certificate ${B}/tmpcert "pem"
+    cat ${B}/tmpcert >> ${WORKDIR}/ova-image/${IMAGE_NAME}.cert
+    rm ${B}/tmpcert
 
     rm -f ${IMGDEPLOYDIR}/${IMAGE_BASENAME}*.ova
 
