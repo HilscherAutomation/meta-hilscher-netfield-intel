@@ -3,7 +3,7 @@ SUMMARY="Signing tool for PE-COFF binaries."
 LICENSE="GPLv3+"
 LIC_FILES_CHKSUM = "file://COPYING;md5=f27defe1e96c2e1ecd4e0c9be8967949"
 
-SRC_URI = "git://github.com/rhboot/pesign.git \
+SRC_URI = "git://github.com/rhboot/pesign.git;protocol=https;branch=main \
            file://disable_lto.patch \
            file://fix_compile_error.patch"
 SRCREV="cbc37d9eb282c428a117a7f0af52ec8d9964e464"
