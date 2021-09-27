@@ -1,0 +1,13 @@
+diff --git a/arch/x86/include/asm/zimage.h b/arch/x86/include/asm/zimage.h
+index 80e128ccf3..ec9c64b26e 100644
+--- a/arch/x86/include/asm/zimage.h
++++ b/arch/x86/include/asm/zimage.h
+@@ -22,7 +22,7 @@
+ #define COMMAND_LINE_MAGIC  0xA33F
+ 
+ /* limits */
+-#define BZIMAGE_MAX_SIZE   15*1024*1024     /* 15MB */
++#define BZIMAGE_MAX_SIZE   64*1024*1024     /* 64MB */
+ #define ZIMAGE_MAX_SIZE    512*1024         /* 512k */
+ #define SETUP_MAX_SIZE     32768
+ 

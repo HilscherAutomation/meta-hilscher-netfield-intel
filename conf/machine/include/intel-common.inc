@@ -6,11 +6,11 @@ include conf/machine/include/soc-family.inc
 #BSP_DEPLOYSCRIPT_DIR??="${DYNAMIC_LAYER_DIR_BASE}/meta-intel/scripts/deploy"
 BSP_DEPLOYSCRIPT_DIR ??= "${TOPDIR}/../meta-hilscher-netfield-intel/scripts/deploy"
 
-INITRAMFS_FSTYPES = "cpio"
-
 MACHINE_EXTRA_RRECOMMENDS_remove += "linux-firmware"
 
-EFI_PROVIDER = "barebox"
+EFI_PROVIDER = "u-boot"
+UBOOT_MACHINE = "efi-x86_payload64_defconfig"
+UBOOT_DEVICE_TREE = "efi-x86_payload"
 
 MACHINE_FEATURES_remove += "alsa"
 MACHINE_FEATURES_append += "3g"
@@ -24,10 +24,10 @@ IMAGE_FSTYPES += "squashfs wic.bz2 swu licenses.tar.bz2"
 #############################################################################
 PREFERRED_PROVIDER_virtual/kernel = "linux-stable-rt"
 PREFERRED_VERSION_linux-stable-rt = "5.4.%"
-PREFERRED_VERSION_kernel-initramfs-bundle = "5.4"
 
-INITRAMFS_IMAGE_BUNDLE = "1"
+INITRAMFS_FSTYPES = "cpio.gz"
 INITRAMFS_IMAGE ?= "core-image-minimal-initramfs"
+INITRAMFS_IMAGE_BUNDLE = "1"
 HILSCHER_RESCUE_IMAGE ??= "hilscher-rescue-image"
 
 #############################################################################
@@ -46,7 +46,7 @@ KEYS_IMAGE_SIGN_CERT_DER ??= "${KEYS_DIR}/uefi/db.crt.der"
 #############################################################################
 # Contents of boot partition (excluding rootfs)
 #############################################################################
-IMAGE_BOOT_FILES = "bootx64.efi;efi/boot/bootx64.efi"
+IMAGE_BOOT_FILES = "boot-files/bootx64.efi;efi/boot/bootx64.efi boot-files/boot.scr;boot.scr"
 
 #############################################################################
 # WIC images
@@ -54,8 +54,14 @@ IMAGE_BOOT_FILES = "bootx64.efi;efi/boot/bootx64.efi"
 WKS_FILE = "hilscher-gpt-boot-rescue-system-lvm.wks.in"
 
 WIC_BOOT_PART_CONTENT ??= "${IMAGE_BOOT_FILES}"
+#<<<<<<< HEAD
 WIC_RESCUE_PART_CONTENT ??= ""
-WIC_SYSTEM_PART_CONTENT ??= "${IMAGE_LINK_NAME}.squashfs boot.cfg boot-files/bzImage;bzImage initrd-api-part-cfg"
+#WIC_SYSTEM_PART_CONTENT ??= "${IMAGE_LINK_NAME}.squashfs boot.cfg boot-files/bzImage;bzImage initrd-api-part-cfg"
+WIC_SYSTEM_PART_CONTENT ??= "${IMAGE_LINK_NAME}.squashfs boot.cfg bzImage-initramfs-${MACHINE}.bin initrd-api-part-cfg"
+#=======
+#WIC_RESCUE_PART_CONTENT ??= "${HILSCHER_RESCUE_IMAGE_LINK_NAME}.squashfs rboot.cfg bzImage-initramfs-${MACHINE}.bin initrd-api-part-cfg;initrd-api"
+#WIC_SYSTEM_PART_CONTENT ??= "${IMAGE_LINK_NAME}.squashfs boot.cfg bzImage-initramfs-${MACHINE}.bin "
+#>>>>>>> [NETFIELDOS-200] - intel: Switch to u-boot as bootloader
 
 #############################################################################
 # SWU images
@@ -64,7 +70,7 @@ SWU_SCRIPTS += "swupdate/helper.lua;helper.lua"
 
 SWU_RSYNC_PART_UPDATE ??= "boot system"
 SWU_BOOT_PART_CONTENT ??= "${IMAGE_BOOT_FILES}"
-SWU_SYSTEM_PART_CONTENT ??= "${IMAGE_LINK_NAME}.squashfs nboot.cfg boot-files/bzImage;bzImage"
+SWU_SYSTEM_PART_CONTENT ??= "${IMAGE_LINK_NAME}.squashfs nboot.cfg bzImage-initramfs-${MACHINE}.bin"
 
 #############################################################################
 # System Partitioning
