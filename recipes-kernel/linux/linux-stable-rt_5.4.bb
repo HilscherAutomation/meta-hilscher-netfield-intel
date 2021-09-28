@@ -12,8 +12,8 @@ KCONF_BSP_AUDIT_LEVEL = "2"
 LINUX_KERNEL_TYPE = "preempt-rt"
 require linux-version.inc
 PV = "${LINUX_VERSION}+git${SRCPV}"
-SRCREV_machine ?= "11ad0451731e7ab8c57281843015717e0e8040ef"
-SRCREV_meta ?= "cca6cbe6c8086da61b5cca448e0ad01b2181a829"
+SRCREV_machine ?= "f30e118c1cde0ba5319bd707b88bd9106284f6be"
+SRCREV_meta ?= "70b2480497528245c948ec259c734d74ea4fa3f1"
 
 SRC_URI += "file://enable_efiruntime_on_rt.patch"
 SRC_URI += "file://enable_preempt_rt.cfg \
