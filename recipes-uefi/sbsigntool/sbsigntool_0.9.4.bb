@@ -9,19 +9,11 @@ LIC_FILES_CHKSUM = "\
 
 DEPENDS += "binutils openssl gnu-efi util-linux"
 
-PV = "0.6+git${SRCPV}"
-
 SRC_URI = "\
-    gitsm://kernel.ubuntu.com/jk/sbsigntool \
-    file://fix-mixed-implicit-and-normal-rules.patch;patchdir=lib/ccan.git \
-    file://disable-man-page-creation.patch \
-    file://Fix-for-multi-sign.patch \
-    file://sbsign-add-x-option-to-avoid-overwrite-existing-sign.patch \
-    file://image-fix-the-segment-fault-caused-by-the-uninitiali.patch \
-    file://Fix-the-deprecated-ASN1_STRING_data-in-openssl-1.1.0.patch \
-    file://Update-OpenSSL-API-usage-to-support-OpenSSL-1.1.patch \
+    gitsm://kernel.googlesource.com/pub/scm/linux/kernel/git/jejb/sbsigntools.git;protocol=https \
+    file://disable_man_generation.patch \
 "
-SRCREV="951ee95a301674c046f55330cd7460e1314deff2"
+SRCREV="d52f7bbb73401aab8a1d59e8d0d686ad9641035e"
 
 S = "${WORKDIR}/git"
 
@@ -33,13 +25,6 @@ def efi_arch(d):
     if re.match("i[3456789]86", arch):
         return "ia32"
     return arch
-
-# Avoids build breaks when using no-static-libs.inc
-#DISABLE_STATIC_class-target = ""
-
-#EXTRA_OECONF_remove_class-target += "\
-#    --with-libtool-sysroot \
-#"
 
 EXTRA_OEMAKE += "\
     INCLUDES='-I${S}/lib/ccan.git' \
@@ -60,6 +45,7 @@ do_configure() {
     fi
 
     export CC="${OLD_CC}"
+    export CRTPATH="${STAGING_LIBDIR_NATIVE}"
     ./autogen.sh --noconfigure
     oe_runconf
 }

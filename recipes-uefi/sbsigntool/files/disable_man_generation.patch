@@ -1,0 +1,7 @@
+diff -aurN a/Makefile.am b/Makefile.am
+--- a/Makefile.am	2021-08-26 15:16:54.600008850 +0200
++++ b/Makefile.am	2021-08-26 15:26:24.674700961 +0200
+@@ -1,2 +1,2 @@
+ 
+-SUBDIRS = lib/ccan src docs tests
++SUBDIRS = lib/ccan src tests
