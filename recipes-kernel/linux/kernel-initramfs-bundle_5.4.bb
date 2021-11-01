@@ -44,7 +44,10 @@ do_install() {
   install -m 0644 ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-initramfs-${MACHINE}.bin ${D}/${KERNEL_IMAGETYPE}
 
   # Signing the kernel ...
-  uefisign_files /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}
+  if [ "${PLATFORM_SIGN}" = "1" ]; then
+    uefisign_files /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}
+  fi
+
   kernel=${D}/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}
   openssl_sign_wrapper ${PLATFORM_KEYNAME} "sha512" ${kernel}
 
