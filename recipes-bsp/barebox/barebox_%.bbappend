@@ -13,7 +13,7 @@ SRC_URI_append += "file://env/bin/init \
                    file://env/menu/mainmenu \
                    file://env/menu/title"
 
-SRC_URI_append += "file://signature_support.patch \
+SRC_URI_append += "${@bb.utils.contains('PLATFORM_SIGN', '1', 'file://signature_support.patch', 'file://disable_signature_check.patch;patchdir=../env/bin/', d)} \
                    file://blspec_menu_disable_back.patch \
                    file://disable_efi_debug_prints.patch \
                    file://disable_efi_env.patch"
@@ -23,7 +23,9 @@ do_configure_append() {
     mkdir -p ${B}/myenv
     cp -r ${WORKDIR}/env/* ${B}/myenv
 
-    dtc -O dtb -o ${B}/myenv/pubkey.dtb ${B}/pubkey.dts
+    if [ "${PLATFORM_SIGN}" = "1" ]; then
+	    dtc -O dtb -o ${B}/myenv/pubkey.dtb ${B}/pubkey.dts
+    fi
 
     # Patch overlay entries
     if [ "${NETIOT_ROOT_OVERLAY}" = "1" ]; then
@@ -38,7 +40,9 @@ do_configure_append() {
 }
 
 do_install_append() {
-    uefisign_files "/boot/efi/boot/bootx64.efi"
+    if [ "${PLATFORM_SIGN}" = "1" ]; then
+        uefisign_files "/boot/efi/boot/bootx64.efi"
+    fi
 }
 
 python do_generate_verification_keys() {
@@ -111,5 +115,6 @@ python do_generate_verification_keys() {
 }
 
 python() {
-    bb.build.addtask('do_generate_verification_keys', 'do_configure', 'do_unpack do_prepare_recipe_sysroot', d)
+    if d.getVar('PLATFORM_SIGN') == '1':
+        bb.build.addtask('do_generate_verification_keys', 'do_configure', 'do_unpack do_prepare_recipe_sysroot', d)
 }
