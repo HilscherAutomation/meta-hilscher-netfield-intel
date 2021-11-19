@@ -12,6 +12,8 @@ BBLAYERS ?= " \
   ${TOPDIR}/../meta-hilscher-netfield/meta-oem \
   ${TOPDIR}/../meta-hilscher-netfield-intel \
   ${TOPDIR}/../meta-intel \
+  ${TOPDIR}/../meta-clang \
+  ${TOPDIR}/../meta-rust \
   ${TOPDIR}/../meta-gplv2 \
   ${TOPDIR}/../meta-security \
   ${TOPDIR}/../meta-security/meta-tpm \
