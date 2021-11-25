@@ -23,6 +23,7 @@ SRC_URI += "file://enable_preempt_rt.cfg \
             file://kpti.cfg      \
             file://retpoline.cfg \
             file://uio.cfg       \
+            file://ath10k.cfg    \
             file://allow_updating_microcode_from_bundled_initramfs.patch"
 
 do_kernel_configme_append() {

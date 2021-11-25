@@ -1,6 +1,7 @@
 IMAGE_INSTALL_remove += "linux-firmware"
 IMAGE_INSTALL_append += "linux-firmware-ibt linux-firmware-iwlwifi-7260 linux-firmware-iwlwifi-7265 linux-firmware-iwlwifi-7265d"
 IMAGE_INSTALL_append += "linux-firmware-rtl8723"
+IMAGE_INSTALL_append += "linux-firmware-ath10k linux-firmware-qca"
 IMAGE_INSTALL_append += "kernel-module-netanalyzer libnetana netanalyzer-firmware netanalyzer-bsl"
 IMAGE_INSTALL_append += "uionetx libcifx cifxtun"
 
