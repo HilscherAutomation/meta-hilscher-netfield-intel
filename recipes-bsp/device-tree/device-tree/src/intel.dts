@@ -1,0 +1,5 @@
+/dts-v1/;
+
+/ {
+	model = "Intel x86";
+};

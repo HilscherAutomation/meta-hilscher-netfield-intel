@@ -6,12 +6,28 @@ include conf/machine/include/soc-family.inc
 #BSP_DEPLOYSCRIPT_DIR??="${DYNAMIC_LAYER_DIR_BASE}/meta-intel/scripts/deploy"
 BSP_DEPLOYSCRIPT_DIR ??= "${TOPDIR}/../meta-hilscher-netfield-intel/scripts/deploy"
 
-MACHINE_EXTRA_RRECOMMENDS_remove += "linux-firmware"
+KERNEL_CLASSES = "kernel-fitimage"
+KERNEL_IMAGETYPES = "fitImage"
+INITRAMFS_IMAGE = "core-image-minimal-initramfs"
+PREFERRED_PROVIDER_virtual/dtb = "device-tree"
+FIT_HASH_ALG = "sha256"
+FIT_SIGN_ALG = "rsa4096"
 
+#############################################################################
+# Bootloader
+#############################################################################
 EFI_PROVIDER = "u-boot"
+UBOOT_DTB_BINARY = ""
 UBOOT_MACHINE = "efi-x86_payload64_defconfig"
+UBOOT_ENTRYPOINT = "0x40008000"
 UBOOT_DEVICE_TREE = "efi-x86_payload"
+UBOOT_SIGN_ENABLE = "1"
+UBOOT_SIGN_KEYDIR = "${KEYS_DIR}/boot/"
+UBOOT_SIGN_KEYNAME = "db"
+UBOOT_MKIMAGE_DTCOPTS = "-I dts -O dtb -p 2000"
+#############################################################################
 
+MACHINE_EXTRA_RRECOMMENDS_remove += "linux-firmware"
 MACHINE_FEATURES_remove += "alsa"
 MACHINE_FEATURES_append += "3g"
 
@@ -54,6 +70,7 @@ IMAGE_BOOT_FILES = "boot-files/bootx64.efi;efi/boot/bootx64.efi boot-files/boot.
 WKS_FILE = "hilscher-gpt-boot-rescue-system-lvm.wks.in"
 
 WIC_BOOT_PART_CONTENT ??= "${IMAGE_BOOT_FILES}"
+
 #<<<<<<< HEAD
 WIC_RESCUE_PART_CONTENT ??= ""
 #WIC_SYSTEM_PART_CONTENT ??= "${IMAGE_LINK_NAME}.squashfs boot.cfg boot-files/bzImage;bzImage initrd-api-part-cfg"
@@ -70,7 +87,7 @@ SWU_SCRIPTS += "swupdate/helper.lua;helper.lua"
 
 SWU_RSYNC_PART_UPDATE ??= "boot system"
 SWU_BOOT_PART_CONTENT ??= "${IMAGE_BOOT_FILES}"
-SWU_SYSTEM_PART_CONTENT ??= "${IMAGE_LINK_NAME}.squashfs nboot.cfg bzImage-initramfs-${MACHINE}.bin"
+SWU_SYSTEM_PART_CONTENT ??= "${IMAGE_LINK_NAME}.squashfs nboot.cfg fitImage"
 
 #############################################################################
 # System Partitioning

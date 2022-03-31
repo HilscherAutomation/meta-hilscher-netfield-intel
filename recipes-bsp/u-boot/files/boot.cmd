@@ -29,7 +29,7 @@ for conf in boot.cfg aboot.cfg rboot.cfg; do
 					setenv bootmenu_${mi} scsi${dev}: ${description} ${type} = "
 						setenv bootargs $basebootargs bootCfg=/dev/${scsidevkname}${part}/${conf};
 						load scsi ${dev}:${part} ${loadaddr} ${kernel};
-						zboot $loadaddr
+						bootm
 					"
 					setexpr mi ${mi} + 1
 				fi

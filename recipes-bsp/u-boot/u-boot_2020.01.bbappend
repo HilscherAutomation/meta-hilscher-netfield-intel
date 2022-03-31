@@ -5,6 +5,7 @@ SRC_URI_append += " \
     file://boot-recovery.cmd \
     file://netfield.cfg \
     file://bzimage_size_limit.patch \
+    file://allow_larger_kernels.patch \
 "
 
 inherit uefisign
