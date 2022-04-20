@@ -54,8 +54,8 @@ IMAGE_BOOT_FILES = "bootx64.efi;efi/boot/bootx64.efi"
 WKS_FILE = "hilscher-gpt-boot-rescue-system-lvm.wks.in"
 
 WIC_BOOT_PART_CONTENT ??= "${IMAGE_BOOT_FILES}"
-WIC_RESCUE_PART_CONTENT ??= "${HILSCHER_RESCUE_IMAGE_LINK_NAME}.squashfs rboot.cfg boot-files/bzImage;bzImage initrd-api-part-cfg;initrd-api"
-WIC_SYSTEM_PART_CONTENT ??= "${IMAGE_LINK_NAME}.squashfs boot.cfg boot-files/bzImage;bzImage"
+WIC_RESCUE_PART_CONTENT ??= ""
+WIC_SYSTEM_PART_CONTENT ??= "${IMAGE_LINK_NAME}.squashfs boot.cfg boot-files/bzImage;bzImage initrd-api-part-cfg"
 
 #############################################################################
 # SWU images
