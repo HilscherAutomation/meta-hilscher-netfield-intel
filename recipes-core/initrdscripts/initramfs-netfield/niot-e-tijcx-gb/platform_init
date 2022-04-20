@@ -7,13 +7,13 @@ platform_init_enabled() {
 platform_init_run() {
 	/bin/install_uefi_keys
 
-	echo "Loading platform devices / drivers ..."
+	__debug "Loading platform devices / drivers ..."
 
 	# load modules for devices
 	load_kernel_module gpio-nife200
         load_kernel_module platform-nife200
 
-	echo "Exporting the platform gpios ..."
+	__debug "Exporting the platform gpios ..."
 	for gc in $(ls -d /sys/class/gpio/gpiochip*); do
 	    if grep "iodev" $gc/label; then
     	        gpio=$(cat $gc/base)
@@ -26,7 +26,7 @@ platform_init_run() {
 	    fi
 	done
 
-	echo "Creating platform symlinks ..."
+	__debug "Creating platform symlinks ..."
 
 	mkdir -p /var/platform
 	mount -t tmpfs tmpfs /var/platform

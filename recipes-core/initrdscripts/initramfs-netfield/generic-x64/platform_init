@@ -5,7 +5,7 @@ platform_init_enabled() {
 }
 
 platform_init_run() {
-	echo "Creating platform symlinks ..."
+	__debug "Creating platform symlinks ..."
 
 	mkdir -p /var/platform
 	mount -t tmpfs tmpfs /var/platform

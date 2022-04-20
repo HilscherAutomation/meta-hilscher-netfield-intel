@@ -63,9 +63,9 @@ platform_init_run() {
 		encrypted_id=$(find_hwid)
 
 		if [ -n "${encrypted_id}" ]; then
-			echo "UEFI does not support persistent variables, using the one on boot partition"
+			__debug "UEFI does not support persistent variables, using the one on boot partition"
 		else
-			echo "Creating unique platform id ..."
+			__debug "Creating unique platform id ..."
 			unique_id=$(dd if=/dev/urandom count=256 bs=1 2>/dev/null | sha256sum | cut -d ' ' -f1)
 			modulus=$(openssl x509 -noout -modulus -in /proc/sys/srm/owner-cert | cut -d '=' -f2)
 			encrypted_id=$(echo $unique_id | openssl aes-256-cbc -nosalt -a -e -k "$modulus" -pbkdf2)
@@ -75,9 +75,9 @@ platform_init_run() {
 	fi
 	umount /sys/firmware/efi/efivars
 
-	echo "Loading platform devices / drivers ..."
+	__debug "Loading platform devices / drivers ..."
 
-	echo "Creating platform symlinks ..."
+	__debug "Creating platform symlinks ..."
 
 	mkdir -p /var/platform
 	mount -t tmpfs tmpfs /var/platform

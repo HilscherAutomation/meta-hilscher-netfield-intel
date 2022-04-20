@@ -15,7 +15,7 @@ platform_init_run() {
 	mkdir -p /var/platform
 	mount -t tmpfs tmpfs /var/platform
 
-	echo "Exporting the platform gpios ..."
+	__debug "Exporting the platform gpios ..."
 	for gc in $(ls -d /sys/class/gpio/gpiochip*); do
 		if [ "$(cat $gc/label)" == "iodev0" ]; then
 			gpiobase=$(cat $gc/base)
