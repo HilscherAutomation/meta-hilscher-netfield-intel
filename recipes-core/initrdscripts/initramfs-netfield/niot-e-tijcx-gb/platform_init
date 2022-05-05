@@ -28,9 +28,6 @@ platform_init_run() {
 
 	__debug "Creating platform symlinks ..."
 
-	mkdir -p /var/platform
-	mount -t tmpfs tmpfs /var/platform
-
 	# GPIO outputs
 	ln -s /sys/class/gpio/gpio$((gpiobase+0))/value  /var/platform/out_gpo0
 	ln -s /sys/class/gpio/gpio$((gpiobase+1))/value  /var/platform/out_gpo1

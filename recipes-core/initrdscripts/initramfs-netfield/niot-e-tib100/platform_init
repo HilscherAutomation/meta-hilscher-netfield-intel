@@ -12,9 +12,6 @@ platform_init_run() {
 	load_kernel_module gpio-nct7904
 	load_kernel_module platform-cps100
 
-	mkdir -p /var/platform
-	mount -t tmpfs tmpfs /var/platform
-
 	__debug "Exporting the platform gpios ..."
 	for gc in $(ls -d /sys/class/gpio/gpiochip*); do
 		if [ "$(cat $gc/label)" == "iodev0" ]; then

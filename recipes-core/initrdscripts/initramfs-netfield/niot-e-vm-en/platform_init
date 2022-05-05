@@ -78,7 +78,4 @@ platform_init_run() {
 	__debug "Loading platform devices / drivers ..."
 
 	__debug "Creating platform symlinks ..."
-
-	mkdir -p /var/platform
-	mount -t tmpfs tmpfs /var/platform
 }
