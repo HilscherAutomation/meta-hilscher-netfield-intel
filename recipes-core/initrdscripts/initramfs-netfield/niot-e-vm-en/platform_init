@@ -53,7 +53,7 @@ save_hwid() {
 }
 
 platform_init_run() {
-	/bin/install_uefi_keys
+	install_uefi_keys
 
 	# We need the pub key loader to access the certificate
 	load_kernel_module pub-key-loader

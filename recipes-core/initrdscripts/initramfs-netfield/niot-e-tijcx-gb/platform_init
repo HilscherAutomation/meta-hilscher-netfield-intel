@@ -5,7 +5,7 @@ platform_init_enabled() {
 }
 
 platform_init_run() {
-	/bin/install_uefi_keys
+	install_uefi_keys
 
 	__debug "Loading platform devices / drivers ..."
 

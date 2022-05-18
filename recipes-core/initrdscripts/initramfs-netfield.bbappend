@@ -11,22 +11,25 @@ SRC_URI_append += " \
 RDEPENDS_${PN}-platform-init_append += "${@bb.utils.contains('PLATFORM_SIGN', '1', 'efitools util-linux-mount', '', d)}"
 do_install_append() {
   if [ "${PLATFORM_SIGN}" = "1" ]; then
-    install -d ${D}/bin
+	install -d ${D}${bindir}
 
     #####################
     # UEFI key installation
     #####################
-    install -m 500 ${WORKDIR}/install_uefi_keys ${D}/bin/
+    install -m 500 ${WORKDIR}/install_uefi_keys ${D}${bindir}/install_uefi_keys
 
-    install -d ${D}/etc/uefikeys
-    install -m 400 ${WORKDIR}/kek.auth ${D}/etc/uefikeys/kek.auth
-    install -m 400 ${WORKDIR}/db.auth ${D}/etc/uefikeys/db.auth
-    install -m 400 ${WORKDIR}/pk.auth ${D}/etc/uefikeys/pk.auth
+    install -d ${D}${sysconfdir}/uefikeys
+    install -m 400 ${WORKDIR}/kek.auth ${D}/${sysconfdir}/uefikeys/kek.auth
+    install -m 400 ${WORKDIR}/db.auth ${D}/${sysconfdir}/uefikeys/db.auth
+    install -m 400 ${WORKDIR}/pk.auth ${D}/${sysconfdir}/uefikeys/pk.auth
   fi
 }
+FILES_${PN}-platform-init_append += "${bindir}/install_uefi_keys ${sysconfdir}/uefikeys/*"
+
 
 # Required by *device_data*
 RDEPENDS_${PN}-device-data_append += "efivar"
 do_install_append_niot-e-vm-en() {
     echo ${MACHINE} | tr "[a-z]" "[A-Z]" > ${D}/forced_productname
 }
+FILES_${PN}-device-data_append += "forced_productname"
