@@ -8,10 +8,9 @@ SRC_URI_append += " \
     ${@bb.utils.contains('PLATFORM_SIGN', '1', 'file://db.auth', '', d)}  \
 "
 
-RDEPENDS_${PN}-platform-init_append += "${@bb.utils.contains('PLATFORM_SIGN', '1', 'efitools util-linux-mount', '', d)}"
+RDEPENDS_${PN}-platform-init_append += "efitools util-linux-mount"
 do_install_append() {
-  if [ "${PLATFORM_SIGN}" = "1" ]; then
-	install -d ${D}${bindir}
+    install -d ${D}${bindir}
 
     #####################
     # UEFI key installation
@@ -22,7 +21,6 @@ do_install_append() {
     install -m 400 ${WORKDIR}/kek.auth ${D}/${sysconfdir}/uefikeys/kek.auth
     install -m 400 ${WORKDIR}/db.auth ${D}/${sysconfdir}/uefikeys/db.auth
     install -m 400 ${WORKDIR}/pk.auth ${D}/${sysconfdir}/uefikeys/pk.auth
-  fi
 }
 FILES_${PN}-platform-init_append += "${bindir}/install_uefi_keys ${sysconfdir}/uefikeys/*"
 
