@@ -2,10 +2,10 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/${BPN}:"
 
 # Required by *platform_init*
 SRC_URI_append += " \
-    ${@bb.utils.contains('PLATFORM_SIGN', '1', 'file://install_uefi_keys', '', d)} \
-    ${@bb.utils.contains('PLATFORM_SIGN', '1', 'file://pk.auth', '', d)}  \
-    ${@bb.utils.contains('PLATFORM_SIGN', '1', 'file://kek.auth', '', d)} \
-    ${@bb.utils.contains('PLATFORM_SIGN', '1', 'file://db.auth', '', d)}  \
+    file://install_uefi_keys \
+    file://pk.auth  \
+    file://kek.auth \
+    file://db.auth \
 "
 
 RDEPENDS_${PN}-platform-init_append += "efitools util-linux-mount"
