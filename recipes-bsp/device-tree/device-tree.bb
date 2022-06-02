@@ -24,4 +24,4 @@ S = "${WORKDIR}/src"
 SRC_URI = "file://src/intel.dts"
 #DTS_TO_SIGN ?= "${S}/intel.dts"
 
-COMPATIBLE_MACHINE="(niot-e-vm-en)"
+COMPATIBLE_MACHINE  = "(generic-x64|niot-e-tijcx-gb|niot-e-vm-en)"
