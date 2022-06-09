@@ -1,0 +1,38 @@
+From 95b0868f63a60f8ce162e324197e8f7583533724 Mon Sep 17 00:00:00 2001
+From: Frank Meisenbach <fmeisenbach@hilscher.com>
+Date: Wed, 8 Jun 2022 07:37:13 +0200
+Subject: [PATCH] Add/Include netiot_distro_config.h support.
+
+---
+ include/configs/efi-x86_payload.h | 1 +
+ include/configs/x86-common.h      | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/include/configs/efi-x86_payload.h b/include/configs/efi-x86_payload.h
+index 1cf5c037e8..f116ffecae 100644
+--- a/include/configs/efi-x86_payload.h
++++ b/include/configs/efi-x86_payload.h
+@@ -11,6 +11,7 @@
+ #define __CONFIG_H
+ 
+ #include <configs/x86-common.h>
++#include "netiot_distro_config.h"
+ 
+ #define CONFIG_SYS_MONITOR_LEN		(1 << 20)
+ 
+diff --git a/include/configs/x86-common.h b/include/configs/x86-common.h
+index 69fd1dad7f..17c2276d16 100644
+--- a/include/configs/x86-common.h
++++ b/include/configs/x86-common.h
+@@ -111,7 +111,7 @@
+ #endif
+ 
+ #define CONFIG_EXTRA_ENV_SETTINGS			\
+-	DISTRO_BOOTENV					\
++	NETIOT_CONFIG_EXTRA_ENV_SETTINGS	\
+ 	CONFIG_STD_DEVICES_SETTINGS			\
+ 	"pciconfighost=1\0"				\
+ 	"netdev=eth0\0"					\
+-- 
+2.17.1
+

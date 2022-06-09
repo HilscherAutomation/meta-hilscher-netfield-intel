@@ -10,7 +10,12 @@ cp -L ${DEPLOY_DIR_IMAGE}/boot-files/bootx64.efi EFI/BOOT
 cp ${DEPLOY_DIR_IMAGE}/fitImage-core-image-minimal-*.bin ./fitImage
 
 # Copy boot script
-cp ${DEPLOY_DIR_IMAGE}/boot-files/boot-${image_type}.scr ./boot.scr
+cp ${DEPLOY_DIR_IMAGE}/boot-script-fit/boot-${image_type}.scr ./boot.scr
+
+if [ "${image_type}" == "recovery" ]; then
+	echo "Installing ${DEPLOY_DIR_IMAGE}/boot-script-fit/boot-recovery.scr in boot partition ..."
+	cp ${DEPLOY_DIR_IMAGE}/boot-script-fit/boot-recovery.scr ./boot.scr
+fi
 
 VERSION_ID=${FIRMWARE_VERSION}
 echo ${VERSION_ID} > VERSION

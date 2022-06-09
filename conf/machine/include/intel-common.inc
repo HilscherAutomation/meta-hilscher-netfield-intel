@@ -62,7 +62,11 @@ KEYS_IMAGE_SIGN_CERT_DER ??= "${KEYS_DIR}/uefi/db.crt.der"
 #############################################################################
 # Contents of boot partition (excluding rootfs)
 #############################################################################
-IMAGE_BOOT_FILES = "boot-files/bootx64.efi;efi/boot/bootx64.efi boot-files/boot.scr;boot.scr"
+IMAGE_BOOT_FILES = "boot-files/bootx64.efi;efi/boot/bootx64.efi"
+
+# depending on the image settings choose the correct boot script
+SCRIPT_SUFFIX = "${@bb.utils.contains('IMAGE_FEATURES', 'debug-tweaks', '-debug.scr', "-fastboot.scr" ,d)}"
+IMAGE_BOOT_FILES += "boot-script-fit/boot-menu${SCRIPT_SUFFIX};boot.scr"
 
 #############################################################################
 # WIC images
@@ -74,7 +78,8 @@ WIC_BOOT_PART_CONTENT ??= "${IMAGE_BOOT_FILES}"
 #<<<<<<< HEAD
 WIC_RESCUE_PART_CONTENT ??= ""
 #WIC_SYSTEM_PART_CONTENT ??= "${IMAGE_LINK_NAME}.squashfs boot.cfg boot-files/bzImage;bzImage initrd-api-part-cfg"
-WIC_SYSTEM_PART_CONTENT ??= "${IMAGE_LINK_NAME}.squashfs boot.cfg bzImage-initramfs-${MACHINE}.bin initrd-api-part-cfg"
+#WIC_SYSTEM_PART_CONTENT ??= "${IMAGE_LINK_NAME}.squashfs boot.cfg bzImage-initramfs-${MACHINE}.bin;bzImage initrd-api-part-cfg"
+WIC_SYSTEM_PART_CONTENT ??= "${IMAGE_LINK_NAME}.squashfs boot.cfg fitImage-${INITRAMFS_IMAGE}-${MACHINE}-${MACHINE};fitImage initrd-api-part-cfg"
 #=======
 #WIC_RESCUE_PART_CONTENT ??= "${HILSCHER_RESCUE_IMAGE_LINK_NAME}.squashfs rboot.cfg bzImage-initramfs-${MACHINE}.bin initrd-api-part-cfg;initrd-api"
 #WIC_SYSTEM_PART_CONTENT ??= "${IMAGE_LINK_NAME}.squashfs boot.cfg bzImage-initramfs-${MACHINE}.bin "
