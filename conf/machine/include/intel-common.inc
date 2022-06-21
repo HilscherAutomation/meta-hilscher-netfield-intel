@@ -19,7 +19,18 @@ FIT_SIGN_ALG = "rsa4096"
 EFI_PROVIDER = "u-boot"
 UBOOT_DTB_BINARY = ""
 UBOOT_MACHINE = "efi-x86_payload64_defconfig"
-UBOOT_ENTRYPOINT = "0x40008000"
+
+# RAM addresses used for the linux kernel.
+#UBOOT_ENTRYSYMBOL = "phys_startup_64"
+# Note:
+#   Because there are some build issues related to UBOOT_ENTRYSYMBOL, fixed addresses are used for UOOT_LOADADDRESS and UBOOT_ENTRYADDRESS.
+#   These fixed addresses should be the same as the results of UBOOT_ENTRYSYMBOL.
+UBOOT_ENTRYPOINT  = "0x01000000"
+UBOOT_LOADADDRESS = "0x01000000"
+
+# RAM address used for the INITRAMFS.
+UBOOT_RD_LOADADDRESS = "0x03000000"
+
 UBOOT_DEVICE_TREE = "efi-x86_payload"
 UBOOT_SIGN_ENABLE = "1"
 UBOOT_SIGN_KEYDIR = "${KEYS_DIR}/boot/"
@@ -74,16 +85,8 @@ IMAGE_BOOT_FILES += "boot-script-fit/boot-menu${SCRIPT_SUFFIX};boot.scr"
 WKS_FILE = "hilscher-gpt-boot-rescue-system-lvm.wks.in"
 
 WIC_BOOT_PART_CONTENT ??= "${IMAGE_BOOT_FILES}"
-
-#<<<<<<< HEAD
 WIC_RESCUE_PART_CONTENT ??= ""
-#WIC_SYSTEM_PART_CONTENT ??= "${IMAGE_LINK_NAME}.squashfs boot.cfg boot-files/bzImage;bzImage initrd-api-part-cfg"
-#WIC_SYSTEM_PART_CONTENT ??= "${IMAGE_LINK_NAME}.squashfs boot.cfg bzImage-initramfs-${MACHINE}.bin;bzImage initrd-api-part-cfg"
-WIC_SYSTEM_PART_CONTENT ??= "${IMAGE_LINK_NAME}.squashfs boot.cfg fitImage-${INITRAMFS_IMAGE}-${MACHINE}-${MACHINE};fitImage initrd-api-part-cfg"
-#=======
-#WIC_RESCUE_PART_CONTENT ??= "${HILSCHER_RESCUE_IMAGE_LINK_NAME}.squashfs rboot.cfg bzImage-initramfs-${MACHINE}.bin initrd-api-part-cfg;initrd-api"
-#WIC_SYSTEM_PART_CONTENT ??= "${IMAGE_LINK_NAME}.squashfs boot.cfg bzImage-initramfs-${MACHINE}.bin "
-#>>>>>>> [NETFIELDOS-200] - intel: Switch to u-boot as bootloader
+WIC_SYSTEM_PART_CONTENT ??= "${IMAGE_LINK_NAME}.squashfs boot.cfg fitImage initrd-api-part-cfg"
 
 #############################################################################
 # SWU images
