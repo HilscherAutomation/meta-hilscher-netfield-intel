@@ -7,6 +7,7 @@ SRC_URI_append += " \
 	file://bzimage_size_limit.patch \
 	file://allow_larger_kernels.patch \
 	file://fix_console_handling.patch \
+	file://fat_show_files_without_arch_attr.patch \
 "
 
 # Supporting common netiot-distro-config.h
