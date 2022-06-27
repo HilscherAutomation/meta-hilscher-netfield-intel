@@ -1,0 +1,26 @@
+From adcddd06d192c3dffc4d7c04d4e56bdb5ad75dfd Mon Sep 17 00:00:00 2001
+From: Frank Meisenbach <fmeisenbach@hilscher.com>
+Date: Mon, 27 Jun 2022 08:49:16 +0200
+Subject: [PATCH] Change the output of shell command "part number" from hex to
+ dec.
+
+---
+ cmd/part.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/cmd/part.c b/cmd/part.c
+index 5e4e45ca6d..6cfb67b279 100644
+--- a/cmd/part.c
++++ b/cmd/part.c
+@@ -152,7 +152,7 @@ static int do_part_info(int argc, char * const argv[], enum cmd_part_info param)
+ 		snprintf(buf, sizeof(buf), LBAF, info.size);
+ 		break;
+ 	case CMD_PART_INFO_NUMBER:
+-		snprintf(buf, sizeof(buf), "0x%x", part);
++		snprintf(buf, sizeof(buf), "%d", part);
+ 		break;
+ 	default:
+ 		printf("** Unknown cmd_part_info value: %d\n", param);
+-- 
+2.17.1
+
