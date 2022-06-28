@@ -11,17 +11,12 @@ LIC_FILES_CHKSUM = " \
 
 inherit devicetree
 
-#inherit dts-sign
-# Setup public key patching into dts
-#DTS_SIGN_ENFORCE="${PLATFORM_SIGN}"
-#DTS_SIGN_KEY_DIR="${PLATFORM_KEYDIR}"
-#DTS_SIGN_KEY_NAME="${PLATFORM_KEYNAME}"
-
-#do_unpack[vardeps] += "PLATFORM_SIGN PLATFORM_KEYDIR PLATFORM_KEYNAME"
-
 S = "${WORKDIR}/src"
 
+# Note:
+#   Since x86 platforms do not require a DT, the one provided by this recipe is only used as a dummy to be included in the fitImage.
+#   For reasons of secure boot, the bootloader has its own mainline DT to which a public-key is appended.
+#   This public-key will then be used for fitImage verifications!
 SRC_URI = "file://src/intel.dts"
-#DTS_TO_SIGN ?= "${S}/intel.dts"
 
 COMPATIBLE_MACHINE  = "(generic-x64|niot-e-tijcx-gb|niot-e-vm-en)"
