@@ -1,0 +1,156 @@
+diff --git a/cmd/bootmenu.c b/cmd/bootmenu.c
+index 3dc2c854ac..1d79e773fd 100644
+--- a/cmd/bootmenu.c
++++ b/cmd/bootmenu.c
+@@ -185,6 +185,8 @@ static void bootmenu_loop(struct bootmenu_data *menu,
+ 	/* enter key was pressed */
+ 	if (c == '\r')
+ 		*key = KEY_SELECT;
++	if (c == 0xA) /* netconsole sends only line feed in boot menu, so check for 0xA */
++		*key = KEY_SELECT;
+ }
+ 
+ static char *bootmenu_choice_entry(void *data)
+@@ -245,7 +247,7 @@ static void bootmenu_destroy(struct bootmenu_data *menu)
+ 	free(menu);
+ }
+ 
+-static struct bootmenu_data *bootmenu_create(int delay)
++static struct bootmenu_data *bootmenu_create(int delay, int console)
+ {
+ 	unsigned short int i = 0;
+ 	const char *option;
+@@ -317,40 +319,41 @@ static struct bootmenu_data *bootmenu_create(int delay)
+ 			break;
+ 	}
+ 
+-	/* Add U-Boot console entry at the end */
+-	if (i <= MAX_COUNT - 1) {
+-		entry = malloc(sizeof(struct bootmenu_entry));
+-		if (!entry)
+-			goto cleanup;
+-
+-		entry->title = strdup("U-Boot console");
+-		if (!entry->title) {
+-			free(entry);
+-			goto cleanup;
+-		}
++	if (console != 0) {
++		/* Add U-Boot console entry at the end */
++		if (i <= MAX_COUNT - 1) {
++			entry = malloc(sizeof(struct bootmenu_entry));
++			if (!entry)
++				goto cleanup;
++
++			entry->title = strdup("U-Boot console");
++			if (!entry->title) {
++				free(entry);
++				goto cleanup;
++			}
+ 
+-		entry->command = strdup("");
+-		if (!entry->command) {
+-			free(entry->title);
+-			free(entry);
+-			goto cleanup;
+-		}
++			entry->command = strdup("");
++			if (!entry->command) {
++				free(entry->title);
++				free(entry);
++				goto cleanup;
++			}
+ 
+-		sprintf(entry->key, "%d", i);
++			sprintf(entry->key, "%d", i);
+ 
+-		entry->num = i;
+-		entry->menu = menu;
+-		entry->next = NULL;
++			entry->num = i;
++			entry->menu = menu;
++			entry->next = NULL;
+ 
+-		if (!iter)
+-			menu->first = entry;
+-		else
+-			iter->next = entry;
++			if (!iter)
++				menu->first = entry;
++			else
++				iter->next = entry;
+ 
+-		iter = entry;
+-		++i;
++			iter = entry;
++			++i;
++		}
+ 	}
+-
+ 	menu->count = i;
+ 
+ 	if ((menu->active >= menu->count)||(menu->active < 0)) { //ensure active menuitem is inside menu
+@@ -365,7 +368,7 @@ cleanup:
+ 	return NULL;
+ }
+ 
+-static void bootmenu_show(int delay)
++static void bootmenu_show(int delay, int console)
+ {
+ 	int init = 0;
+ 	void *choice = NULL;
+@@ -392,7 +395,7 @@ static void bootmenu_show(int delay)
+ 		return;
+ 	}
+ 
+-	bootmenu = bootmenu_create(delay);
++	bootmenu = bootmenu_create(delay, console);
+ 	if (!bootmenu)
+ 		return;
+ 
+@@ -474,9 +477,9 @@ void menu_display_statusline(struct menu *m)
+ }
+ 
+ #ifdef CONFIG_AUTOBOOT_MENU_SHOW
+-int menu_show(int bootdelay)
++int menu_show(int bootdelay, int console)
+ {
+-	bootmenu_show(bootdelay);
++	bootmenu_show(bootdelay, console);
+ 	return -1; /* -1 - abort boot and run monitor code */
+ }
+ #endif
+@@ -485,6 +488,7 @@ int do_bootmenu(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])
+ {
+ 	char *delay_str = NULL;
+ 	int delay = 10;
++	int console = 0;
+ 
+ #if defined(CONFIG_BOOTDELAY) && (CONFIG_BOOTDELAY >= 0)
+ 	delay = CONFIG_BOOTDELAY;
+@@ -493,19 +497,23 @@ int do_bootmenu(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])
+ 	if (argc >= 2)
+ 		delay_str = argv[1];
+ 
++	if (argc >= 3)
++		console = (strcmp(argv[2],"0") == 0) ? 0 : 1;
++
+ 	if (!delay_str)
+ 		delay_str = env_get("bootmenu_delay");
+ 
+ 	if (delay_str)
+ 		delay = (int)simple_strtol(delay_str, NULL, 10);
+ 
+-	bootmenu_show(delay);
++	bootmenu_show(delay, console);
+ 	return 0;
+ }
+ 
+ U_BOOT_CMD(
+-	bootmenu, 2, 1, do_bootmenu,
++	bootmenu, 3, 1, do_bootmenu,
+ 	"ANSI terminal bootmenu",
+ 	"[delay]\n"
++	"[0/1] add console entry\n"
+ 	"    - show ANSI terminal bootmenu with autoboot delay"
+ );

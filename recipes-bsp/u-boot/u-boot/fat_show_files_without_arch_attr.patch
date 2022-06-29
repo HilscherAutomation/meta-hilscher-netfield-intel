@@ -1,0 +1,23 @@
+USB sticks created with 7zip by directly expanding zip to disk don't show all files as ATTR_ARCH is not set in
+FAT attributes. This was introduced between 2019.01 and 2020.01 in u-boot with the following commit:
+  https://github.com/u-boot/u-boot/commit/39606d462c97408fa10c41206631e64225458636
+
+This results in usb sticks not being bootable by u-boot since dunfell update in special cases. So partially revert this commit
+
+fatls usb 0:1 only shows fitImage file and ommitting firmware, VERSION and boot-fit
+
+diff --git a/fs/fat/fat.c b/fs/fat/fat.c
+index 68ce658386..8bfa564203 100644
+--- a/fs/fat/fat.c
++++ b/fs/fat/fat.c
+@@ -947,9 +958,7 @@ static int fat_itr_next(fat_itr *itr)
+ 				/* Volume label or VFAT entry, skip */
+ 				continue;
+ 			}
+-		} else if (!(dent->attr & ATTR_ARCH) &&
+-			   !(dent->attr & ATTR_DIR))
+-			continue;
++		}
+ 
+ 		/* short file name */
+ 		break;
