@@ -77,7 +77,7 @@ IMAGE_BOOT_FILES = "boot-files/bootx64.efi;efi/boot/bootx64.efi"
 
 # depending on the image settings choose the correct boot script
 SCRIPT_SUFFIX = "${@bb.utils.contains('IMAGE_FEATURES', 'debug-tweaks', '-debug.scr', "-fastboot.scr" ,d)}"
-IMAGE_BOOT_FILES += "boot-script-fit/boot-menu${SCRIPT_SUFFIX};boot.scr"
+IMAGE_BOOT_FILES += "boot-script-fit/fitImage-boot-menu${SCRIPT_SUFFIX};boot-fit.scr"
 
 #############################################################################
 # WIC images
