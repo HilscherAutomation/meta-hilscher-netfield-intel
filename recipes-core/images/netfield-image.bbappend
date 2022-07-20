@@ -15,4 +15,13 @@ IMAGE_INSTALL_append_niot-e-vm-en += "open-vm-tools"
 CONVERSION_CMD_qcow2 = "qemu-img convert -O qcow2 ${IMAGE_NAME}${IMAGE_NAME_SUFFIX}.${type} ${IMAGE_NAME}${IMAGE_NAME_SUFFIX}.${type}.qcow2 && \
                         qemu-img resize ${IMAGE_NAME}${IMAGE_NAME_SUFFIX}.${type}.qcow2 ${OVA_DISKIMAGE_SIZE}"
 
-do_image_wic[depends] += "barebox:do_deploy kernel-initramfs-bundle:do_deploy"
+do_image_wic[depends] += "u-boot:do_deploy"
+
+hd_path_squashfs = "${HDEPLOY_PATH_EXTRAS}/base_image"
+
+do_hilscher_deploy_append() {
+        for file in $(find ${IMGDEPLOYDIR} -type l -name "*.squashfs"); do
+                cp -a $(readlink -f $file) ${hd_path_squashfs}
+        done
+}
+do_hilscher_deploy[cleandirs] += " ${hd_path_squashfs}/ "

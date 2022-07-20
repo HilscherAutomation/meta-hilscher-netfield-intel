@@ -1,0 +1,41 @@
+#!/bin/sh
+
+platform_init_enabled() {
+	return 0
+}
+
+platform_init_run() {
+	install_uefi_keys
+
+	load_kernel_module i2c-i801
+	load_kernel_module gpio-cps100
+	load_kernel_module gpio-nct7904
+	load_kernel_module platform-cps100
+
+	__debug "Exporting the platform gpios ..."
+	for gc in $(ls -d /sys/class/gpio/gpiochip*); do
+		if [ "$(cat $gc/label)" == "iodev0" ]; then
+			gpiobase=$(cat $gc/base)
+
+			for n in {0..3}; do
+				gpio=$((gpiobase+n))
+				echo "${gpio}" > /sys/class/gpio/export
+				echo "in" > /sys/class/gpio/gpio${gpio}/direction
+				ln -s /sys/class/gpio/gpio${gpio}/value  /var/platform/in_gpi$n
+			done
+
+			for n in {0..3}; do
+				gpio=$((gpiobase+4+n))
+				echo "${gpio}" > /sys/class/gpio/export
+				echo "low" > /sys/class/gpio/gpio${gpio}/direction
+				ln -s /sys/class/gpio/gpio${gpio}/value  /var/platform/out_gpo$n
+			done
+		fi
+	done
+
+  	ln -s /sys/class/leds/gpo1:orange:user/brightness  /var/platform/led_gpo1
+  	ln -s /sys/class/leds/gpo1:orange:user/brightness  /var/platform/update_led
+  	ln -s /sys/class/leds/apl:orange:user/brightness   /var/platform/led_apl
+	# For some reason APL Led starts with brightness=0 but LED is still on, so disable it here
+	echo 0 > /var/platform/led_apl
+}

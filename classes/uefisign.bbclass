@@ -9,23 +9,22 @@ uefisign_files() {
     sign_wrapper_copy_certificate "${B}/cert" "pem"
 
     for file_to_sign in ${SIGN_FILES}; do
-        mv ${D}${file_to_sign} ${D}${file_to_sign}.unsigned
+        mv ${file_to_sign} ${file_to_sign}.unsigned
 
         case "${SIGN_WRAPPER_MODE}" in
         file)
-            sbsign --key "$signing_key" --cert "${B}/cert" ${D}${file_to_sign}.unsigned --output ${D}${file_to_sign}
+            sbsign --key "$signing_key" --cert "${B}/cert" ${file_to_sign}.unsigned --output ${file_to_sign}
         ;;
 
         swtpm)
-            sbsign --key "$signing_key" --cert "${B}/cert" --engine tpm2tss ${D}${file_to_sign}.unsigned --output ${D}${file_to_sign}
+            sbsign --key "$signing_key" --cert "${B}/cert" --engine tpm2tss ${file_to_sign}.unsigned --output ${file_to_sign}
         ;;
 
         pkcs11)
-            sbsign --key "$signing_key" --cert "${B}/cert" --engine pkcs11 ${D}${file_to_sign}.unsigned --output ${D}${file_to_sign}
+            sbsign --key "$signing_key" --cert "${B}/cert" --engine pkcs11 ${file_to_sign}.unsigned --output ${file_to_sign}
         ;;
         esac
 
-        rm -f ${D}${file_to_sign}.unsigned
-        chown 0:0 ${D}${file_to_sign}
+        rm -f ${file_to_sign}.unsigned
     done
 }
