@@ -29,5 +29,6 @@ FILES_${PN}-platform-init_append += "${bindir}/install_uefi_keys ${sysconfdir}/u
 RDEPENDS_${PN}-device-data_append += "efivar"
 do_install_append_niot-e-vm-en() {
     echo ${MACHINE} | tr "[a-z]" "[A-Z]" > ${D}/forced_productname
+    echo "FFFFFFFFFFFF" > ${D}/forced_productnumber
 }
-FILES_${PN}-device-data_append += "forced_productname"
+FILES_${PN}-device-data_append += "forced_productname forced_productnumber"
