@@ -10,6 +10,9 @@ SRC_URI_append += " \
 	file://fat_show_files_without_arch_attr.patch \
 "
 
+# VMWare ESXI and VMWare Player crash due to missing config options
+SRC_URI_append_niot-e-vm-en += "file://efi_vmware_fix.cfg"
+
 # Supporting common netiot-distro-config.h
 SRC_URI_append += " \
 	file://0001-Add-Include-netiot_distro_config.h-support.patch \
