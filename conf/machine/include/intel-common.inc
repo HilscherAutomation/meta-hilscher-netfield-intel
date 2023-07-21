@@ -54,7 +54,7 @@ PREFERRED_VERSION_linux-stable-rt = "5.4.%"
 
 INITRAMFS_FSTYPES = "cpio.gz"
 INITRAMFS_IMAGE ?= "core-image-minimal-initramfs"
-INITRAMFS_IMAGE_BUNDLE = "1"
+INITRAMFS_IMAGE_BUNDLE = "0"
 HILSCHER_RESCUE_IMAGE ??= "hilscher-rescue-image"
 
 #############################################################################
