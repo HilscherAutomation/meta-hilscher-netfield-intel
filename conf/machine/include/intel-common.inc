@@ -28,9 +28,6 @@ UBOOT_MACHINE = "efi-x86_payload64_defconfig"
 UBOOT_ENTRYPOINT  = "0x01000000"
 UBOOT_LOADADDRESS = "0x01000000"
 
-# RAM address used for the INITRAMFS.
-UBOOT_RD_LOADADDRESS = "0x03000000"
-
 UBOOT_DEVICE_TREE = "efi-x86_payload"
 UBOOT_SIGN_ENABLE = "1"
 UBOOT_SIGN_KEYDIR = "${KEYS_DIR}/boot/"
@@ -54,7 +51,7 @@ PREFERRED_VERSION_linux-stable-rt = "5.4.%"
 
 INITRAMFS_FSTYPES = "cpio.gz"
 INITRAMFS_IMAGE ?= "core-image-minimal-initramfs"
-INITRAMFS_IMAGE_BUNDLE = "1"
+INITRAMFS_IMAGE_BUNDLE = "0"
 HILSCHER_RESCUE_IMAGE ??= "hilscher-rescue-image"
 
 #############################################################################
