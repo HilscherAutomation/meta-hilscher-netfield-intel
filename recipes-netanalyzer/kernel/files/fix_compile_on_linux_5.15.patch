@@ -1,0 +1,28 @@
+diff --git a/netana_enum.c b/netana_enum.c
+index c1a26bb..7296992 100644
+--- a/netana_enum.c
++++ b/netana_enum.c
+@@ -61,7 +61,7 @@ static int netana_pci_probe( struct pci_dev* ptpci_device, const struct pci_devi
+ 
+         if ((ptdevicemem->addr    = pci_resource_start( ptpci_device, 0)) ) {
+                 ptdevicemem->size = pci_resource_len( ptpci_device, ibar);
+-                ptdevicemem->internal_addr = ioremap_nocache( ptdevicemem->addr,
++                ptdevicemem->internal_addr = ioremap_cache( ptdevicemem->addr,
+                                                         ptdevicemem->size);
+         }
+         if (ptdevicemem->internal_addr == NULL)
+@@ -269,7 +269,7 @@ static int nanl_of_probe(struct platform_device *pdev)
+         /* Preliminary work to add netanalyzer devices */
+         ptdevicemem->addr = res->start;
+         ptdevicemem->size = res->end - res->start + 1;
+-        ptdevicemem->internal_addr = devm_ioremap_nocache(&pdev->dev, ptdevicemem->addr, ptdevicemem->size);
++        ptdevicemem->internal_addr = devm_ioremap_cache(&pdev->dev, ptdevicemem->addr, ptdevicemem->size);
+ 
+         printk(KERN_INFO "card physical DPM: 0x%lX!\n", ptdevicemem->addr);
+         printk(KERN_INFO "DPM mapped to    : 0x%lX!\n", (long unsigned int)ptdevicemem->internal_addr);
+@@ -358,4 +358,4 @@ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR(DRIVER_AUTHOR);
+ MODULE_DESCRIPTION(DRIVER_DESC);
+ 
+-MODULE_SUPPORTED_DEVICE( DEVICE_NAME);
++// MODULE_SUPPORTED_DEVICE( DEVICE_NAME);
