@@ -1,8 +1,3 @@
-KERNEL_FEATURES_append += "features/scsi/scsi.scc features/scsi/disk.scc cfg/efi-ext.scc features/bluetooth/bluetooth.scc \
-                           features/apparmor/apparmor.scc"
-KERNEL_FEATURES_append_niot-e-vm-en += "cfg/vmware-guest.scc cfg/virtio.scc"
-SRC_URI_append_niot-e-vm-en += "file://vm_fusion_lan.cfg"
-
 SRC_URI_append += "file://bluetooth_more_csr_quirks.patch"
 
 # ATTENTION: When updating recipe, make sure to recheck if whitelisted CVEs still apply

@@ -15,16 +15,16 @@ PV = "${LINUX_VERSION}+git${SRCPV}"
 SRCREV_machine ?= "8600e1d4ddea4824920029f0a44be69dae7c451c"
 SRCREV_meta ?= "4e3a9c1f6b09417169c46078900b604983cf4071"
 
-# SRC_URI += "file://enable_efiruntime_on_rt.patch"
-# SRC_URI += "file://enable_preempt_rt.cfg \
-#             file://baytrail.cfg  \
-#             file://rtl8723be.cfg \
-#             file://efi_stub.cfg  \
-#             file://kpti.cfg      \
-#             file://retpoline.cfg \
-#             file://uio.cfg       \
-#             file://ath10k.cfg    \
-#             file://allow_updating_microcode_from_bundled_initramfs.patch"
+SRC_URI += "file://enable_efiruntime_on_rt.patch"
+SRC_URI += "file://enable_preempt_rt.cfg \
+            file://baytrail.cfg  \
+            file://rtl8723be.cfg \
+            file://efi_stub.cfg  \
+            file://kpti.cfg      \
+            file://retpoline.cfg \
+            file://uio.cfg       \
+            file://ath10k.cfg    \
+            file://allow_updating_microcode_from_bundled_initramfs.patch"
 
 do_kernel_configme_append() {
     sed -i -e 's/CONFIG_PREEMPT=y/# CONFIG_PREEMPT is not set/' \
