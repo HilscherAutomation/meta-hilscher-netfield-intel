@@ -10,7 +10,7 @@ in the Linux 3.8 kernel. \
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://COPYING;md5=e28f66b16cb46be47b20a4cdfe6e99a1"
 
-DEPENDS_append += "\
+DEPENDS:append = "\
     help2man-native openssl-native sbsigntool-native \
     libfile-slurp-perl-native \
 "
@@ -48,12 +48,12 @@ EXTRA_OEMAKE = "\
     OPENSSL_LIB='${STAGING_LIBDIR_NATIVE}' \
     EXTRA_LDFLAGS='${LDFLAGS}' \
 "
-EXTRA_OEMAKE_append_x86 += " ARCH=ia32"
-EXTRA_OEMAKE_append_x86-64 += " ARCH=x86_64"
+EXTRA_OEMAKE:append:x86 = " ARCH=ia32"
+EXTRA_OEMAKE:append:x86-64 = " ARCH=x86_64"
 
 EFI_BOOT_PATH = "/boot/efi/EFI/BOOT"
 
-do_compile_prepend() {
+do_compile:prepend() {
     sed -i -e "1s:#!.*:#!/usr/bin/env nativeperl:" xxdi.pl
 }
 
@@ -61,6 +61,6 @@ do_install() {
     oe_runmake install DESTDIR='${D}${base_prefix}'
 }
 
-FILES_${PN} += "${EFI_BOOT_PATH}"
+FILES:${PN} += "${EFI_BOOT_PATH}"
 
-SSTATE_DUPWHITELIST += "${DEPLOY_DIR_IMAGE}/LockDown.efi"
+SSTATE_ALLOW_OVERLAP_FILES += "${DEPLOY_DIR_IMAGE}/LockDown.efi"

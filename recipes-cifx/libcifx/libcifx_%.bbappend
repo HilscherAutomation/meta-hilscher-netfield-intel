@@ -1,8 +1,8 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
-SRC_URI_append += "file://C010D000.nxf"
+SRC_URI:append = " file://C010D000.nxf"
 
-do_install_append() {
+do_install:append() {
     install -d ${D}/opt/cifx/FW
     install ${WORKDIR}/C010D000.nxf ${D}/opt/cifx/FW
 
@@ -10,4 +10,4 @@ do_install_append() {
     ln -s /opt/cifx/FW/C010D000.nxf ${D}/opt/cifx/deviceconfig/FW/channel0/default.nxf
 }
 
-FILES_${PN}_append += "/opt/cifx/deviceconfig/FW/channel0 /opt/cifx/FW"
+FILES:${PN}:append = " /opt/cifx/deviceconfig/FW/channel0 /opt/cifx/FW"

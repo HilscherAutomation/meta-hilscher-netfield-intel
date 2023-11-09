@@ -3,7 +3,7 @@ require efitools.inc
 # The generated native binaries are used during native and target build
 DEPENDS += "${BPN}-native gnu-efi openssl"
 
-SRC_URI_append += "\
+SRC_URI:append = "\
     file://LockDown-enable-the-enrollment-for-DBX.patch \
     file://LockDown-show-the-error-message-with-3-sec-timeout.patch \
     file://Makefile-do-not-build-signed-efi-image.patch \
@@ -16,7 +16,7 @@ COMPATIBLE_HOST = '(i.86|x86_64).*-linux'
 
 inherit deploy
 
-EXTRA_OEMAKE_append += "\
+EXTRA_OEMAKE:append = "\
     INCDIR_PREFIX='${STAGING_DIR_TARGET}' \
     CRTPATH_PREFIX='${STAGING_DIR_TARGET}' \
     SIGN_EFI_SIG_LIST='${STAGING_BINDIR_NATIVE}/sign-efi-sig-list' \
@@ -27,6 +27,6 @@ EXTRA_OEMAKE_append += "\
     HELP2MAN_PROG_PREFIX='${STAGING_BINDIR_NATIVE}' \
 "
 
-RDEPENDS_${PN}_append += "\
+RDEPENDS:${PN}:append = "\
   mtools coreutils util-linux openssl libcrypto \
 "

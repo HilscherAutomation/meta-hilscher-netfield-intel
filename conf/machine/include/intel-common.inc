@@ -35,12 +35,12 @@ UBOOT_SIGN_KEYNAME = "db"
 UBOOT_MKIMAGE_DTCOPTS = "-I dts -O dtb -p 2000"
 #############################################################################
 
-MACHINE_EXTRA_RRECOMMENDS_remove += "linux-firmware"
-MACHINE_FEATURES_remove += "alsa"
-MACHINE_FEATURES_append += "3g"
+MACHINE_EXTRA_RRECOMMENDS:remove = "linux-firmware"
+MACHINE_FEATURES:remove = "alsa"
+MACHINE_FEATURES:append = " 3g"
 
 #############################################################################
-IMAGE_CLASSES_append += "hilscher_image_types"
+IMAGE_CLASSES:append = " hilscher_image_types"
 IMAGE_FSTYPES += "squashfs wic.bz2 swu licenses.tar.bz2"
 
 #############################################################################
