@@ -1,6 +1,6 @@
 inherit sign-wrapper
 
-DEPENDS_append += "sbsigntool-native"
+DEPENDS:append = " sbsigntool-native"
 
 uefisign_files() {
     local SIGN_FILES="${1}"

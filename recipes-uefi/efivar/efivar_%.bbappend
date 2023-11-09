@@ -1,3 +1,3 @@
-do_install_append_class-native () {
+do_install:append:class-native () {
     oe_runmake install DESTDIR=${D}
 }

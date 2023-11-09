@@ -1,13 +1,13 @@
-KERNEL_FEATURES_append += "features/scsi/scsi.scc features/scsi/disk.scc cfg/efi-ext.scc features/bluetooth/bluetooth.scc \
+KERNEL_FEATURES:append = " features/scsi/scsi.scc features/scsi/disk.scc cfg/efi-ext.scc features/bluetooth/bluetooth.scc \
                            features/apparmor/apparmor.scc"
-KERNEL_FEATURES_append_niot-e-vm-en += "cfg/vmware-guest.scc cfg/virtio.scc"
-SRC_URI_append_niot-e-vm-en += "file://vm_fusion_lan.cfg"
+KERNEL_FEATURES:append:niot-e-vm-en = " cfg/vmware-guest.scc cfg/virtio.scc"
+SRC_URI:append:niot-e-vm-en = " file://vm_fusion_lan.cfg"
 
-SRC_URI_append += "file://bluetooth_more_csr_quirks.patch"
+SRC_URI:append = " file://bluetooth_more_csr_quirks.patch"
 
 # ATTENTION: When updating recipe, make sure to recheck if whitelisted CVEs still apply
 # CVE-2019-18814 Code path is not included in 4.14
-CVE_CHECK_WHITELIST_append += "CVE-2019-18814"
+CVE_CHECK_IGNORE:append = " CVE-2019-18814"
 # Following are already patched upstream
-CVE_CHECK_WHITELIST_append += "CVE-2019-18805 CVE-2019-17133 CVE-2019-16746 CVE-2019-15926 CVE-2019-15505 \
+CVE_CHECK_IGNORE:append = " CVE-2019-18805 CVE-2019-17133 CVE-2019-16746 CVE-2019-15926 CVE-2019-15505 \
                                CVE-2019-15504 CVE-2019-15292 CVE-2019-10126 CVE-2018-20784"

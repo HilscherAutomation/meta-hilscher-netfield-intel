@@ -10,7 +10,7 @@ OVA_TEMPLATE ??= "${NETFIELD_INTEL_BASE}/files/ovf.in"
 
 inherit sign-wrapper
 
-IMAGE_CMD_ova () {
+IMAGE_CMD:ova () {
     # create working directory
     rm -rf  ${WORKDIR}/ova-image
     mkdir -p ${WORKDIR}/ova-image
@@ -71,8 +71,8 @@ IMAGE_CMD_ova () {
     ln -sf ${IMAGE_NAME}.ova ${IMGDEPLOYDIR}/${IMAGE_LINK_NAME}.ova
 }
 
-IMAGE_TYPEDEP_ova = "wic"
-IMAGE_TYPES_append += "ova"
+IMAGE_TYPEDEP:ova = "wic"
+IMAGE_TYPES:append = " ova"
 do_image_ova[depends] += "qemu-system-native:do_populate_sysroot"
 do_image_ova[depends] += "open-vmdk-native:do_populate_sysroot"
 do_image_ova[depends] += "util-linux-native:do_populate_sysroot"

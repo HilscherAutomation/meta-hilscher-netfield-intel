@@ -7,7 +7,7 @@ PR = "r0"
 SRC_URI = "file://display-hotplug.service \
            file://display-hotplug.sh \
 "
-RDEPENDS_${PN} += "xrandr"
+RDEPENDS:${PN} += "xrandr"
 
 do_install() {
     if [ "${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'systemd', '', d)}" = "systemd" ]; then
@@ -19,6 +19,6 @@ do_install() {
 
 inherit systemd
 
-SYSTEMD_SERVICE_${PN} = "${BPN}.service"
+SYSTEMD_SERVICE:${PN} = "${BPN}.service"
 
-FILES_${PN} += "${systemd_unitdir}"
+FILES:${PN} += "${systemd_unitdir}"
