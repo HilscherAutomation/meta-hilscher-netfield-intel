@@ -13,7 +13,7 @@ SRC_URI = "\
     gitsm://kernel.googlesource.com/pub/scm/linux/kernel/git/jejb/sbsigntools.git;protocol=https \
     file://disable_man_generation.patch \
 "
-SRCREV="d52f7bbb73401aab8a1d59e8d0d686ad9641035e"
+SRCREV="9cfca9fe7aa7a8e29b92fe33ce8433e212c9a8ba"
 
 S = "${WORKDIR}/git"
 
