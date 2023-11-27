@@ -7,7 +7,7 @@ index c1a26bb..7296992 100644
          if ((ptdevicemem->addr    = pci_resource_start( ptpci_device, 0)) ) {
                  ptdevicemem->size = pci_resource_len( ptpci_device, ibar);
 -                ptdevicemem->internal_addr = ioremap_nocache( ptdevicemem->addr,
-+                ptdevicemem->internal_addr = ioremap_cache( ptdevicemem->addr,
++                ptdevicemem->internal_addr = ioremap( ptdevicemem->addr,
                                                          ptdevicemem->size);
          }
          if (ptdevicemem->internal_addr == NULL)
@@ -16,7 +16,7 @@ index c1a26bb..7296992 100644
          ptdevicemem->addr = res->start;
          ptdevicemem->size = res->end - res->start + 1;
 -        ptdevicemem->internal_addr = devm_ioremap_nocache(&pdev->dev, ptdevicemem->addr, ptdevicemem->size);
-+        ptdevicemem->internal_addr = devm_ioremap_cache(&pdev->dev, ptdevicemem->addr, ptdevicemem->size);
++        ptdevicemem->internal_addr = devm_ioremap(&pdev->dev, ptdevicemem->addr, ptdevicemem->size);
  
          printk(KERN_INFO "card physical DPM: 0x%lX!\n", ptdevicemem->addr);
          printk(KERN_INFO "DPM mapped to    : 0x%lX!\n", (long unsigned int)ptdevicemem->internal_addr);

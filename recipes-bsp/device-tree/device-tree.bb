@@ -19,4 +19,4 @@ S = "${WORKDIR}/src"
 #   This public-key will then be used for fitImage verifications!
 SRC_URI = "file://src/intel.dts"
 
-COMPATIBLE_MACHINE  = "(generic-x64|niot-e-tijcx-gb|niot-e-vm-en|netfield-compact-x86c)"
+COMPATIBLE_MACHINE  = "(generic-x64|netfield-compact-x86c|niot-e-tijcx-gb|niot-e-vm-en)"
