@@ -11,6 +11,10 @@
 	"setenv basebootargs rootflags=noatime overlayflags=noatime,discard ro rootwait rootdelay=1 roottimeout=10 reboot=efi,warm no_ima loglevel=4 acpi_enforce_resources=lax; " \
 	"setenv fdt_addr ${loadaddr}; " \
 	"scsi reset; " \
+	"nvme scan; " \
+	"mmc rescan; " \
+	"if nvme dev $plat_dev; then setenv plat_dev_if nvme; setenv plat_dev_linux /dev/nvme0n1p; fi; " \
+	"if mmc dev $plat_dev; then setenv plat_dev_if mmc; setenv plat_dev_linux /dev/mmcblk0p; fi; " \
 	"part number $plat_dev_if $plat_dev boot plat_boot_part; " \
 	"part number $plat_dev_if $plat_dev system plat_system_part; " \
 	"usb reset; " \
