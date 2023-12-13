@@ -7,18 +7,18 @@ efi-readvar and efi-updatevar commands. Aside from needing efitools \
 in the Linux 3.8 kernel. \
 "
 
-LICENSE = "GPLv2"
+LICENSE = "GPL-2.0-only"
 LIC_FILES_CHKSUM = "file://COPYING;md5=e28f66b16cb46be47b20a4cdfe6e99a1"
 
-DEPENDS:append = "\
+DEPENDS:append = " \
     help2man-native openssl-native sbsigntool-native \
     libfile-slurp-perl-native \
 "
 
-PV = "1.7.0+git${SRCPV}"
+PV = "1.9.2+git${SRCPV}"
 
 SRC_URI = "\
-    git://git.kernel.org/pub/scm/linux/kernel/git/jejb/efitools.git \
+    git://git.kernel.org/pub/scm/linux/kernel/git/jejb/efitools.git;branch=master \
     file://Fix-for-the-cross-compilation.patch \
     file://Kill-all-the-build-warning-caused-by-implicit-declar.patch \
     file://Fix-the-wrong-dependency-for-blacklist.esl.patch \
@@ -28,11 +28,10 @@ SRC_URI = "\
     file://Don-t-build-PreLoader.efi.patch \
     file://Reuse-xxdi.pl.patch \
     file://Add-static-keyword-for-IsValidVariableHeader.patch \
-    file://Dynamically-load-openssl.cnf-for-openssl-1.0.x-and-1.patch \
-    file://cert-to-efi-hash-list-support-to-build-with-openssl-.patch \
-    file://fix_typo.patch \
+    file://Dynamically-load-openssl.cnf-for-openssl-1.0.x-1.1.x.patch \
+    file://0001-console.c-Fix-compilation-against-latest-usr-include.patch \
 "
-SRCREV = "0649468475d20d8ca5634433c4912467cef3ce93"
+SRCREV = "392836a46ce3c92b55dc88a1aebbcfdfc5dcddce"
 
 PARALLEL_MAKE = ""
 
@@ -59,6 +58,20 @@ do_compile:prepend() {
 
 do_install() {
     oe_runmake install DESTDIR='${D}${base_prefix}'
+}
+
+fakeroot python do_sign:class-target() {
+    if d.getVar('GRUB_SIGN_VERIFY', True) != '1':
+        return
+
+    image_dir = d.getVar('D', True)
+    efi_boot_path = d.getVar('EFI_BOOT_PATH', True)
+    uks_boot_sign(os.path.join(image_dir + efi_boot_path, 'LockDown.efi'), d)
+}
+addtask sign after do_install before do_deploy do_package
+do_sign[prefuncs] += "${@'check_boot_public_key' if d.getVar('GRUB_SIGN_VERIFY', True) == '1' else ''}"
+
+fakeroot python do_sign() {
 }
 
 FILES:${PN} += "${EFI_BOOT_PATH}"
