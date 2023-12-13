@@ -1,5 +1,5 @@
 # Version of local configuration file
-CONF_VERSION = "1"
+CONF_VERSION = "2"
 
 # Supported machines
 #MACHINE ?= "niot-e-tib100"
