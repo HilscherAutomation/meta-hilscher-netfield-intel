@@ -7,7 +7,6 @@ SRC_URI:append = " \
 	file://bzimage_size_limit.patch \
 	file://allow_larger_kernels.patch \
 	file://fix_console_handling.patch \
-	file://fat_show_files_without_arch_attr.patch \
 "
 
 # VMWare ESXI and VMWare Player crash due to missing config options

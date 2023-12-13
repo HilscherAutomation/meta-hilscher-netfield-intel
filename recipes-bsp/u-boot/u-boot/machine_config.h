@@ -27,9 +27,6 @@
 
 // ---------------------------
 
-#undef CONFIG_LOADADDR
-#define CONFIG_LOADADDR 0x05000000
-
 #undef CONFIG_SYS_LOAD_ADDR
 #define CONFIG_SYS_LOAD_ADDR 0x05000000
 
