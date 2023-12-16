@@ -50,7 +50,7 @@ IMAGE_CMD:ova () {
         setup_sign_wrapper_env "${PLATFORM_KEYNAME}"
         export OPENSSL_SIGN_WRAPPER_ADD_OPTIONS="-hex"
         openssl_sign_wrapper "${PLATFORM_KEYNAME}" "sha256" ${WORKDIR}/ova-image/${IMAGE_NAME}.mf
-        sed -e 's/RSA-SHA256/SHA256/' \
+        sed -e 's/RSA-SHA2-256/SHA256/' \
             -e 's;${WORKDIR}/ova-image/;;' \
             ${WORKDIR}/ova-image/${IMAGE_NAME}.mf.sig \
             > ${WORKDIR}/ova-image/${IMAGE_NAME}.cert
