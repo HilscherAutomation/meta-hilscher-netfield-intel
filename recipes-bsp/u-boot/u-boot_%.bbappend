@@ -34,7 +34,7 @@ do_configure:prepend() {
 }
 
 do_compile:append() {
-	ln -s u-boot-payload.efi ${B}/bootx64.efi
+	ln -sf u-boot-payload.efi ${B}/bootx64.efi
 	uefisign_files ${B}/bootx64.efi
 }
 
