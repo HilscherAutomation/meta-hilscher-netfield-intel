@@ -38,4 +38,4 @@ require recipes-kernel/linux/netfield-linux.inc
 COMPATIBLE_MACHINE ?= "(intel-corei7-64|intel-core2-32)"
 
 # Prevent automatically inclusion of kernel-image into rootfs/image
-RDEPENDS:kernel-base:remove += "kernel-image"
+RDEPENDS:kernel-base:remove = " kernel-image"
