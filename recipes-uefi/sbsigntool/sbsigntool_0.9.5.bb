@@ -10,8 +10,9 @@ LIC_FILES_CHKSUM = "\
 DEPENDS += "binutils openssl gnu-efi util-linux"
 
 SRC_URI = "\
-    gitsm://kernel.googlesource.com/pub/scm/linux/kernel/git/jejb/sbsigntools.git;protocol=https \
+    gitsm://kernel.googlesource.com/pub/scm/linux/kernel/git/jejb/sbsigntools.git;protocol=https;branch=master \
     file://disable_man_generation.patch \
+    file://fix_pkcs11_segfault.patch \
 "
 SRCREV="9cfca9fe7aa7a8e29b92fe33ce8433e212c9a8ba"
 

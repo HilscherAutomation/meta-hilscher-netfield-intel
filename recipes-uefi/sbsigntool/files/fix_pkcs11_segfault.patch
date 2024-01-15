@@ -1,0 +1,19 @@
+sbsign segfaults using libp11-native due to engine being freed before use.
+This patch causes a key leak, but otherwise lot's of code would need restructuring
+
+See:
+  https://github.com/OpenSC/libp11/issues/327
+  https://github.com/osresearch/sbsigntools/commit/5154c68bce6848b49222564675720d10a1caca2c
+
+diff -aurN a/src/fileio.c b/src/fileio.c
+--- a/src/fileio.c	2024-01-15 10:30:58.030639219 +0100
++++ b/src/fileio.c	2024-01-15 11:16:40.434893324 +0100
+@@ -90,7 +90,7 @@
+ 	}
+ 
+ 	pkey = ENGINE_load_private_key(e, filename, ui, NULL);
+-	ENGINE_finish(e);
++	//ENGINE_finish(e);
+ 
+  out_free:
+ 	ENGINE_free(e);
