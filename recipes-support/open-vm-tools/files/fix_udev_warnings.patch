@@ -2,7 +2,6 @@ systemd-udev complains about rules being executable and wrong substitution.
 
 * /lib/udev/rules.d/99-vmware-scsi-udev.rules:6 Invalid value "/bin/sh -c 'echo 180 >/sys$DEVPATH/device/timeout'" for RUN (char 27: invalid substitution type), ignoring, but please fix it.
 * /lib/udev/rules.d/99-vmware-scsi-udev.rules:5 Invalid value "/bin/sh -c 'echo 180 >/sys$DEVPATH/device/timeout'" for RUN (char 27: invalid substitution type), ignoring, but please fix it.
-* Configuration file /lib/udev/rules.d/99-vmware-scsi-udev.rules is marked executable. Please remove executable permission bits. Proceeding anyway.
 
 diff -aurN a/udev/99-vmware-scsi-udev.rules b/udev/99-vmware-scsi-udev.rules
 --- a/udev/99-vmware-scsi-udev.rules	2020-07-16 08:13:33.671466280 +0200
@@ -11,18 +10,8 @@ diff -aurN a/udev/99-vmware-scsi-udev.rules b/udev/99-vmware-scsi-udev.rules
  #
  # This file is part of open-vm-tools
  
--ACTION=="add", SUBSYSTEMS=="scsi", ATTRS{vendor}=="VMware*", ATTRS{model}=="Virtual disk*", ENV{DEVTYPE}=="disk", RUN+="/bin/sh -c 'echo 180 >/sys$DEVPATH/device/timeout'"
--ACTION=="add", SUBSYSTEMS=="scsi", ATTRS{vendor}=="VMware*", ATTRS{model}=="VMware Virtual S", ENV{DEVTYPE}=="disk", RUN+="/bin/sh -c 'echo 180 >/sys$DEVPATH/device/timeout'"
-+ACTION=="add", SUBSYSTEMS=="scsi", ATTRS{vendor}=="VMware*", ATTRS{model}=="Virtual disk*", ENV{DEVTYPE}=="disk", RUN+="/bin/sh -c 'echo 180 >/sys$$DEVPATH/device/timeout'"
-+ACTION=="add", SUBSYSTEMS=="scsi", ATTRS{vendor}=="VMware*", ATTRS{model}=="VMware Virtual S", ENV{DEVTYPE}=="disk", RUN+="/bin/sh -c 'echo 180 >/sys$$DEVPATH/device/timeout'"
- 
-diff -aurN a/udev/Makefile.am b/udev/Makefile.am
---- a/udev/Makefile.am	2020-07-16 08:13:33.671466280 +0200
-+++ b/udev/Makefile.am	2020-07-24 08:42:51.441633480 +0200
-@@ -17,5 +17,5 @@
- 
- install-data-local:
- 	$(INSTALL) -d $(DESTDIR)$(UDEVRULESDIR)
--	$(INSTALL) $(srcdir)/99-vmware-scsi-udev.rules $(DESTDIR)$(UDEVRULESDIR)
-+	$(INSTALL) -m 0644 $(srcdir)/99-vmware-scsi-udev.rules $(DESTDIR)$(UDEVRULESDIR)
- 
+-ACTION=="add", SUBSYSTEMS=="scsi", ATTRS{vendor}=="VMware*", ATTRS{model}=="Virtual disk*", ENV{DEVTYPE}=="disk", RUN+="/bin/sh -c 'echo 180 >/sys$env{DEVPATH}/device/timeout'"
+-ACTION=="add", SUBSYSTEMS=="scsi", ATTRS{vendor}=="VMware*", ATTRS{model}=="VMware Virtual S", ENV{DEVTYPE}=="disk", RUN+="/bin/sh -c 'echo 180 >/sys$env{DEVPATH}/device/timeout'"
++ACTION=="add", SUBSYSTEMS=="scsi", ATTRS{vendor}=="VMware*", ATTRS{model}=="Virtual disk*", ENV{DEVTYPE}=="disk", RUN+="/bin/sh -c 'echo 180 >/sys$$env{DEVPATH}/device/timeout'"
++ACTION=="add", SUBSYSTEMS=="scsi", ATTRS{vendor}=="VMware*", ATTRS{model}=="VMware Virtual S", ENV{DEVTYPE}=="disk", RUN+="/bin/sh -c 'echo 180 >/sys$$env{DEVPATH}/device/timeout'"
+

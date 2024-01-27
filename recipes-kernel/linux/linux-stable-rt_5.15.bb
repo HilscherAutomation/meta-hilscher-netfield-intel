@@ -26,7 +26,7 @@ SRC_URI += "file://enable_preempt_rt.cfg \
             file://ath10k.cfg    \
             file://allow_updating_microcode_from_bundled_initramfs.patch"
 
-do_kernel_configme_append() {
+do_kernel_configme:append() {
     sed -i -e 's/CONFIG_PREEMPT=y/# CONFIG_PREEMPT is not set/' \
            -e 's/# CONFIG_PREEMPT_RT is not set/CONFIG_PREEMPT_RT=y/' ${B}/.config
 }
@@ -38,4 +38,4 @@ require recipes-kernel/linux/netfield-linux.inc
 COMPATIBLE_MACHINE ?= "(intel-corei7-64|intel-core2-32)"
 
 # Prevent automatically inclusion of kernel-image into rootfs/image
-RDEPENDS_kernel-base_remove += "kernel-image"
+RDEPENDS:kernel-base:remove = " kernel-image"

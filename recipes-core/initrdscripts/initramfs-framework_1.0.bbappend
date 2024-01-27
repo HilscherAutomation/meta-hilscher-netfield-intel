@@ -1,1 +1,1 @@
-RDEPENDS_${PN}-base_append += "gptfdisk"
+RDEPENDS:${PN}-base:append = " gptfdisk"

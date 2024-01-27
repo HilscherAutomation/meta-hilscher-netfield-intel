@@ -12,7 +12,7 @@ PKGV = "1.0+git${GITPKGV}"
 PR = "r3"
 SRCREV = "82eb7268e78cc32907573b713569e1331c571ce5"
 
-SRC_URI = "git://github.com/vmware/open-vmdk;protocol=git"
+SRC_URI = "git://github.com/vmware/open-vmdk;protocol=https;branch=master"
 
 S = "${WORKDIR}/git"
 

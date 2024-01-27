@@ -7,12 +7,12 @@ UEFI_SIG_OWNER_GUID="eaaf7a90-1f0f-11e9-b56e-0800200c9a66"
 #    cp ${KEYS_DIR}/uefi/kek.crt ${B}/KEK.crt
 #}
 
-do_compile_append() {
+do_compile:append() {
     oe_runmake efi-keytool
 }
 
-do_install_append() {
+do_install:append() {
     install ${B}/efi-keytool ${D}${bindir}
 }
 
-RDEPENDS_${PN}_remove += "mtools"
+RDEPENDS:${PN}:remove = "mtools"

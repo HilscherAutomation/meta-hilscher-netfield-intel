@@ -1,15 +1,15 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/${BPN}:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/${BPN}:"
 
 # Required by *platform_init*
-SRC_URI_append += " \
+SRC_URI:append = " \
     file://install_uefi_keys \
     file://pk.auth  \
     file://kek.auth \
     file://db.auth \
 "
 
-RDEPENDS_${PN}-platform-init_append += "efitools util-linux-mount"
-do_install_append() {
+RDEPENDS:${PN}-platform-init:append = " efitools util-linux-mount"
+do_install:append() {
     install -d ${D}${bindir}
 
     #####################
@@ -22,13 +22,13 @@ do_install_append() {
     install -m 400 ${WORKDIR}/db.auth ${D}/${sysconfdir}/uefikeys/db.auth
     install -m 400 ${WORKDIR}/pk.auth ${D}/${sysconfdir}/uefikeys/pk.auth
 }
-FILES_${PN}-platform-init_append += "${bindir}/install_uefi_keys ${sysconfdir}/uefikeys/*"
+FILES:${PN}-platform-init:append = " ${bindir}/install_uefi_keys ${sysconfdir}/uefikeys/*"
 
 
 # Required by *device_data*
-RDEPENDS_${PN}-device-data_append += "efivar"
-do_install_append_niot-e-vm-en() {
+RDEPENDS:${PN}-device-data:append = " efivar"
+do_install:append:niot-e-vm-en() {
     echo ${MACHINE} | tr "[a-z]" "[A-Z]" > ${D}/forced_productname
     echo "FFFFFFFFFFFF" > ${D}/forced_productnumber
 }
-FILES_${PN}-device-data_append += "forced_productname forced_productnumber"
+FILES:${PN}-device-data:append = " forced_productname forced_productnumber"
