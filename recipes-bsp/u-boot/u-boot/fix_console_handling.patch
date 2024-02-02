@@ -1,17 +1,26 @@
+From 44ef0f11a39f87e8bcc44f8c9f8c26676f8a2bdf Mon Sep 17 00:00:00 2001
+From: Frank Meisenbach <fmeisenbach@hilscher.com>
+Date: Thu, 9 Jun 2022 16:10:31 +0200
+Subject: [PATCH] - u-boot: Update to support the u-boot
+
+---
+ cmd/bootmenu.c | 78 ++++++++++++++++++++++++++++----------------------
+ 1 file changed, 43 insertions(+), 35 deletions(-)
+
 diff --git a/cmd/bootmenu.c b/cmd/bootmenu.c
-index 3dc2c854ac..1d79e773fd 100644
+index 409ef9a848..c2c9939850 100644
 --- a/cmd/bootmenu.c
 +++ b/cmd/bootmenu.c
-@@ -185,6 +185,8 @@ static void bootmenu_loop(struct bootmenu_data *menu,
- 	/* enter key was pressed */
- 	if (c == '\r')
+@@ -133,6 +133,8 @@ static void bootmenu_autoboot_loop(struct bootmenu_data *menu,
+ 
+ 	if (menu->delay == 0)
  		*key = KEY_SELECT;
 +	if (c == 0xA) /* netconsole sends only line feed in boot menu, so check for 0xA */
 +		*key = KEY_SELECT;
  }
  
- static char *bootmenu_choice_entry(void *data)
-@@ -245,7 +247,7 @@ static void bootmenu_destroy(struct bootmenu_data *menu)
+ static void bootmenu_loop(struct bootmenu_data *menu,
+@@ -275,7 +277,7 @@ static void bootmenu_destroy(struct bootmenu_data *menu)
  	free(menu);
  }
  
@@ -20,7 +29,7 @@ index 3dc2c854ac..1d79e773fd 100644
  {
  	unsigned short int i = 0;
  	const char *option;
-@@ -317,40 +319,41 @@ static struct bootmenu_data *bootmenu_create(int delay)
+@@ -347,40 +349,41 @@ static struct bootmenu_data *bootmenu_create(int delay)
  			break;
  	}
  
@@ -90,8 +99,8 @@ index 3dc2c854ac..1d79e773fd 100644
  	menu->count = i;
  
  	if ((menu->active >= menu->count)||(menu->active < 0)) { //ensure active menuitem is inside menu
-@@ -365,7 +368,7 @@ cleanup:
- 	return NULL;
+@@ -423,7 +426,7 @@ static void menu_display_statusline(struct menu *m)
+ 	puts(ANSI_CLEAR_LINE);
  }
  
 -static void bootmenu_show(int delay)
@@ -99,7 +108,7 @@ index 3dc2c854ac..1d79e773fd 100644
  {
  	int init = 0;
  	void *choice = NULL;
-@@ -392,7 +395,7 @@ static void bootmenu_show(int delay)
+@@ -450,7 +453,7 @@ static void bootmenu_show(int delay)
  		return;
  	}
  
@@ -108,7 +117,7 @@ index 3dc2c854ac..1d79e773fd 100644
  	if (!bootmenu)
  		return;
  
-@@ -474,9 +477,9 @@ void menu_display_statusline(struct menu *m)
+@@ -505,9 +508,9 @@ cleanup:
  }
  
  #ifdef CONFIG_AUTOBOOT_MENU_SHOW
@@ -120,7 +129,7 @@ index 3dc2c854ac..1d79e773fd 100644
  	return -1; /* -1 - abort boot and run monitor code */
  }
  #endif
-@@ -485,6 +488,7 @@ int do_bootmenu(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])
+@@ -516,6 +519,7 @@ int do_bootmenu(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
  {
  	char *delay_str = NULL;
  	int delay = 10;
@@ -128,7 +137,7 @@ index 3dc2c854ac..1d79e773fd 100644
  
  #if defined(CONFIG_BOOTDELAY) && (CONFIG_BOOTDELAY >= 0)
  	delay = CONFIG_BOOTDELAY;
-@@ -493,19 +497,23 @@ int do_bootmenu(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])
+@@ -524,19 +528,23 @@ int do_bootmenu(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
  	if (argc >= 2)
  		delay_str = argv[1];
  
