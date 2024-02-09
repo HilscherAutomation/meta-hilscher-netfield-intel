@@ -1,0 +1,177 @@
+From a5db6c77d1543c6bc9a20f9f8c15591668272259 Mon Sep 17 00:00:00 2001
+From: Michael Trensch <mtrensch@hilscher.com>
+Date: Thu, 8 Feb 2024 09:07:08 +0100
+Subject: [PATCH 1/4] Add command to verify an RSA signature for files
+
+---
+ commands/Kconfig     |   8 +++
+ commands/Makefile    |   1 +
+ commands/signature.c | 126 +++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 135 insertions(+)
+ create mode 100644 commands/signature.c
+
+diff --git a/commands/Kconfig b/commands/Kconfig
+index a6806f198e..cddcaff10f 100644
+--- a/commands/Kconfig
++++ b/commands/Kconfig
+@@ -2408,6 +2408,14 @@ config CMD_STACKSMASH
+ 	  This commands trashes the stack to test stackprotector and
+ 	  guard page. This command does not return.
+ 
++config CMD_SIGNATURE
++	tristate
++	prompt "signature"
++	select CRYPTO_RSA
++	select OFTREE
++	help
++	  Signature verification support
++
+ # end Miscellaneous commands
+ endmenu
+ 
+diff --git a/commands/Makefile b/commands/Makefile
+index 4924755500..dcda891c93 100644
+--- a/commands/Makefile
++++ b/commands/Makefile
+@@ -146,5 +146,6 @@ obj-$(CONFIG_CMD_UBSAN)		+= ubsan.o
+ obj-$(CONFIG_CMD_SELFTEST)	+= selftest.o
+ obj-$(CONFIG_CMD_TUTORIAL)	+= tutorial.o
+ obj-$(CONFIG_CMD_STACKSMASH)	+= stacksmash.o
++obj-$(CONFIG_CMD_SIGNATURE)	+= signature.o
+ 
+ UBSAN_SANITIZE_ubsan.o := y
+diff --git a/commands/signature.c b/commands/signature.c
+new file mode 100644
+index 0000000000..ecfce74233
+--- /dev/null
++++ b/commands/signature.c
+@@ -0,0 +1,126 @@
++#include <common.h>
++#include <command.h>
++#include <getopt.h>
++#include <errno.h>
++#include <rsa.h>
++#include <fs.h>
++#include <libfile.h>
++
++static int do_verify_signature(int argc, char *argv[])
++{
++	struct rsa_public_key* key = NULL;
++	unsigned char *key_file = NULL , *file = NULL, *sig_file = NULL;
++	int opt, ret;
++	struct device_node *root_node, *key_node;
++	enum hash_algo algo = HASH_ALGO_SHA512;
++	void *sig_value = NULL, *hash_file = NULL, *hash = NULL;
++	size_t sig_len, hash_file_len, key_file_len;
++	struct digest *digest = NULL;
++
++	while ((opt = getopt(argc, argv, "a:s:")) > 0) {
++		switch(opt) {
++		case 'a':
++			if(strcmp(optarg, "sha1") == 0)
++				algo = HASH_ALGO_SHA1;
++			else if(strcmp(optarg, "sha256") == 0)
++				algo = HASH_ALGO_SHA256;
++			else if(strcmp(optarg, "sha512") == 0)
++				algo = HASH_ALGO_SHA512;
++			else {
++				printf("Unknown algo %s\n", optarg);
++				return COMMAND_ERROR_USAGE;
++			}
++		break;
++		default:
++			return COMMAND_ERROR_USAGE;
++		}
++	}
++
++	key_file = read_file(argv[optind], &key_file_len);
++	if(!key_file) {
++		printf("Error reading keyfile %s\n", argv[optind]);
++		return COMMAND_ERROR_USAGE;
++	}
++	optind++;
++	file = argv[optind++];
++	sig_file = argv[optind++];
++
++	root_node = of_unflatten_dtb(key_file, INT_MAX);
++	if(IS_ERR(root_node)) {
++		printf("Error reading key_file %d\n", (int)PTR_ERR(root_node));
++		return PTR_ERR(root_node);
++	}
++
++	key_node = of_find_node_by_path_from(root_node, "/signature/key-sig");
++	if(!key_node) {
++		printf("Failed to find key node\n");
++		ret = -ENOENT;
++		goto err_out;
++	}
++
++	key = rsa_of_read_key(key_node);
++	if(IS_ERR(key))
++	{
++		printf("failed to read key in %s\n", key_node->full_name);
++		ret = -ENOENT;
++		goto err_out;
++	}
++
++	digest = digest_alloc_by_algo(algo);
++	BUG_ON(!digest);
++
++	digest_init(digest);
++	hash_file = read_file(file, &hash_file_len);
++	if(!hash_file) {
++		printf("Error reading file '%s'\n", file);
++		ret = -ENOENT;
++		goto err_out;
++	}
++
++	sig_value = read_file(sig_file, &sig_len);
++	if(!sig_value) {
++		printf("Error reading signature file '%s'\n", sig_file);
++		ret = -ENOENT;
++		goto err_out;
++	}
++
++	digest_update(digest, hash_file, hash_file_len);
++	hash = xzalloc(digest_length(digest));
++	digest_final(digest, hash);
++
++	ret = rsa_verify(key, sig_value, sig_len, hash, algo);
++	if (ret) {
++		pr_debug("file signature BAD\n");
++		ret = -EBADMSG;
++	} else {
++		pr_debug("file signature OK\n");
++		ret = 0;
++	}
++
++err_out:
++	if(!key)
++		rsa_key_free(key);
++	if(!digest)
++		digest_free(digest);
++	if(!hash)
++		free(hash);
++	if(!sig_value)
++		free(sig_value);
++	if(!key_file)
++		free(key_file);
++	if(!hash_file)
++		free(hash_file);
++	if(!sig_value)
++		free(sig_value);
++	if(!root_node)
++		of_delete_node(root_node);
++
++        return ret;
++}
++
++BAREBOX_CMD_START(verify_signature)
++	.cmd = do_verify_signature,
++	BAREBOX_CMD_DESC("Verify signature against known public key.")
++        BAREBOX_CMD_OPTS("[-a] keyfile file signature")
++	BAREBOX_CMD_GROUP(CMD_GRP_FILE)
++BAREBOX_CMD_END
+-- 
+2.25.1
+

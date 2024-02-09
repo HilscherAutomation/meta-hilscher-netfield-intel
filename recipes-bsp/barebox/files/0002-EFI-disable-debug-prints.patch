@@ -1,0 +1,30 @@
+From e2fff468eaebc9147119840ac762c28a6fad9aea Mon Sep 17 00:00:00 2001
+From: Michael Trensch <mtrensch@hilscher.com>
+Date: Thu, 8 Feb 2024 09:09:15 +0100
+Subject: [PATCH 2/4] EFI: disable debug prints
+
+---
+ common/efi/payload/init.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/common/efi/payload/init.c b/common/efi/payload/init.c
+index b990b54b26..83cdbfd37a 100644
+--- a/common/efi/payload/init.c
++++ b/common/efi/payload/init.c
+@@ -147,11 +147,11 @@ static struct efi_boot *efi_get_boot(int num)
+ 
+ 	ptr += (strlen(boot->description) + 1) * 2;
+ 
+-	printf("description: %s\n", boot->description);
++	//printf("description: %s\n", boot->description);
+ 
+ 	boot->path = memdup(ptr, boot->file_path_len);
+ 
+-	printf("path: %s\n", device_path_to_str(boot->path));
++	//printf("path: %s\n", device_path_to_str(boot->path));
+ 
+ 	return boot;
+ }
+-- 
+2.25.1
+

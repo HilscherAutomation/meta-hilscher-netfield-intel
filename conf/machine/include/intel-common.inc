@@ -6,33 +6,16 @@ include conf/machine/include/soc-family.inc
 #BSP_DEPLOYSCRIPT_DIR??="${DYNAMIC_LAYER_DIR_BASE}/meta-intel/scripts/deploy"
 BSP_DEPLOYSCRIPT_DIR ??= "${TOPDIR}/../meta-hilscher-netfield-intel/scripts/deploy"
 
-KERNEL_CLASSES = "kernel-fitimage"
-KERNEL_IMAGETYPES = "fitImage"
-INITRAMFS_IMAGE = "core-image-minimal-initramfs"
-PREFERRED_PROVIDER_virtual/dtb = "device-tree"
-FIT_HASH_ALG = "sha256"
-FIT_SIGN_ALG = "rsa4096"
+KERNEL_IMAGETYPES = "bzImage"
+WIC_SYSTEM_PART_CONTENT:append = " bzImage-initramfs-${MACHINE}.bin"
+WIC_SYSTEM_PART_CONTENT:remove = " fitImage"
 
 #############################################################################
 # Bootloader
 #############################################################################
-EFI_PROVIDER = "u-boot"
-UBOOT_DTB_BINARY = ""
-UBOOT_MACHINE = "efi-x86_payload64_defconfig"
+EFI_PROVIDER = "barebox"
+KERNEL_CMDLINE ?= "rootflags=noatime overlayflags=noatime,discard ro rootwait rootdelay=1 roottimeout=10 reboot=efi,warm no_ima loglevel=4 acpi_enforce_resources=lax"
 
-# RAM addresses used for the linux kernel.
-#UBOOT_ENTRYSYMBOL = "phys_startup_64"
-# Note:
-#   Because there are some build issues related to UBOOT_ENTRYSYMBOL, fixed addresses are used for UOOT_LOADADDRESS and UBOOT_ENTRYADDRESS.
-#   These fixed addresses should be the same as the results of UBOOT_ENTRYSYMBOL.
-UBOOT_ENTRYPOINT  = "0x01000000"
-UBOOT_LOADADDRESS = "0x01000000"
-
-UBOOT_DEVICE_TREE = "efi-x86_payload"
-UBOOT_SIGN_ENABLE = "1"
-UBOOT_SIGN_KEYDIR = "${KEYS_DIR}/boot/"
-UBOOT_SIGN_KEYNAME = "db"
-UBOOT_MKIMAGE_DTCOPTS = "-I dts -O dtb -p 2000"
 #############################################################################
 
 MACHINE_EXTRA_RRECOMMENDS:remove = "linux-firmware"
@@ -51,7 +34,7 @@ PREFERRED_VERSION_linux-stable-rt = "5.4.%"
 
 INITRAMFS_FSTYPES = "cpio.gz"
 INITRAMFS_IMAGE ?= "core-image-minimal-initramfs"
-INITRAMFS_IMAGE_BUNDLE = "0"
+INITRAMFS_IMAGE_BUNDLE = "1"
 HILSCHER_RESCUE_IMAGE ??= "hilscher-rescue-image"
 
 #############################################################################
@@ -71,10 +54,7 @@ KEYS_IMAGE_SIGN_CERT_DER ??= "${KEYS_DIR}/uefi/db.crt.der"
 # Contents of boot partition (excluding rootfs)
 #############################################################################
 IMAGE_BOOT_FILES = "boot-files/bootx64.efi;efi/boot/bootx64.efi"
-
-# depending on the image settings choose the correct boot script
-SCRIPT_SUFFIX = "${@bb.utils.contains('IMAGE_FEATURES', 'debug-tweaks', '-debug.scr', "-fastboot.scr" ,d)}"
-IMAGE_BOOT_FILES += "boot-script-fit/fitImage-boot-menu${SCRIPT_SUFFIX};boot-fit.scr"
+USB_BOOT_FILES = "boot-files/boot-recovery.scr;boot.scr boot-files/boot-recovery.scr.sig;boot.scr.sig bzImage-initramfs-${MACHINE}.bin;Image"
 
 #############################################################################
 # WIC images
@@ -92,7 +72,7 @@ SWU_SCRIPTS += "swupdate/helper.lua;helper.lua"
 
 SWU_RSYNC_PART_UPDATE ??= "boot system"
 SWU_BOOT_PART_CONTENT ??= "${IMAGE_BOOT_FILES}"
-SWU_SYSTEM_PART_CONTENT ??= "${IMAGE_LINK_NAME}.squashfs nboot.cfg fitImage"
+SWU_SYSTEM_PART_CONTENT ??= "${IMAGE_LINK_NAME}.squashfs nboot.cfg bzImage-initramfs-${MACHINE}.bin"
 
 #############################################################################
 # System Partitioning
