@@ -8,6 +8,7 @@ Common targets are:
     MACHINE="niot-e-vm-en" bitbake netfield-image
     MACHINE="generic-x64" bitbake netfield-image
     MACHINE="netfield-compact-x86c" bitbake netfield-image
+    MACHINE="netfield-unity" bitbake netfield-image
 
 Other commonly useful commands are:
  - 'devtool' and 'recipetool' handle common recipe tasks
