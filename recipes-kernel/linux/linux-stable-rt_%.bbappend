@@ -21,6 +21,7 @@ SRC_URI:append:niot-e-tijx-gb = " \
 "
 SRC_URI:append:netfield-compact-x86c = " file://intel_gbe.cfg"
 SRC_URI:append:niot-e-vm-en = " file://vm_fusion_lan.cfg file://enable_hyperv.cfg"
+SRC_URI:append:netfield-unity = " file://nct6775.cfg"
 
 inherit uefisign sign-wrapper
 

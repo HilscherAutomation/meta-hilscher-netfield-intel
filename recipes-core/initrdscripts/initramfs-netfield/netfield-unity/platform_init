@@ -1,0 +1,15 @@
+#!/bin/sh
+
+platform_init_enabled() {
+	return 0
+}
+
+platform_init_run() {
+	[ -x "install_uefi_keys" ] &&install_uefi_keys
+	# We need the pub key loader to access the certificate
+	load_kernel_module pub-key-loader
+
+	__debug "Loading platform devices / drivers ..."
+
+	__debug "Creating platform symlinks ..."
+}
