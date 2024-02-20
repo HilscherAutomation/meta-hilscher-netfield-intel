@@ -3,6 +3,8 @@ require intel-corei7-64.conf
 SOC_FAMILY = "intel-corei7-64"
 include conf/machine/include/soc-family.inc
 
+INSTALL_UEFI_KEYS ??= "1"
+
 #BSP_DEPLOYSCRIPT_DIR??="${DYNAMIC_LAYER_DIR_BASE}/meta-intel/scripts/deploy"
 BSP_DEPLOYSCRIPT_DIR ??= "${TOPDIR}/../meta-hilscher-netfield-intel/scripts/deploy"
 
