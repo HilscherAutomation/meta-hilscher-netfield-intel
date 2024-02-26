@@ -4,7 +4,20 @@ KERNEL_FEATURES:append = " features/scsi/scsi.scc features/scsi/disk.scc cfg/efi
 KERNEL_FEATURES:append:netfield-compact-x86c = " features/net/stmicro/stmmac.scc"
 KERNEL_FEATURES:append:niot-e-vm-en = " cfg/vmware-guest.scc cfg/virtio.scc"
 
-SRC_URI:append = " file://enable_hidraw.cfg"
+
+SRC_URI:append = " \
+    file://enable_hidraw.cfg \
+    file://efi_stub.cfg      \
+    file://kpti.cfg          \
+    file://retpoline.cfg     \
+    file://uio.cfg           \
+    file://gpio_sysfs.cfg    \
+"
+SRC_URI:append:niot-e-tijx-gb = " \
+    file://baytrail.cfg  \
+    file://rtl8723be.cfg \
+    file://ath10k.cfg    \
+"
 SRC_URI:append:netfield-compact-x86c = " file://intel_gbe.cfg"
 SRC_URI:append:niot-e-vm-en = " file://vm_fusion_lan.cfg"
 
