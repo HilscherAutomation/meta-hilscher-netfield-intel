@@ -30,7 +30,7 @@ IMAGE_FSTYPES += "squashfs wic.bz2 swu licenses.tar.bz2"
 # Preferred components/settings
 #############################################################################
 PREFERRED_PROVIDER_virtual/kernel = "linux-stable-rt"
-PREFERRED_VERSION_linux-stable-rt = "5.4.%"
+PREFERRED_VERSION_linux-stable-rt = "5.15.%"
 
 INITRAMFS_FSTYPES = "cpio.gz"
 INITRAMFS_IMAGE ?= "core-image-minimal-initramfs"
