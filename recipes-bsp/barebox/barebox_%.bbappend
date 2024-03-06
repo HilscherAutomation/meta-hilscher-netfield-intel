@@ -126,7 +126,7 @@ do_deploy:append() {
     local signing_key=$(setup_sign_wrapper_env "${PLATFORM_KEYNAME}")
 
     install ${WORKDIR}/scripts/boot-recovery.scr ${DEPLOYDIR}/boot-files/
-    openssl_sign_wrapper "${signing_key}" "sha512" "${DEPLOYDIR}/boot-files/boot-recovery.scr"
+    openssl_sign_wrapper "${PLATFORM_KEYNAME}" "sha512" "${DEPLOYDIR}/boot-files/boot-recovery.scr"
 }
 
 inherit hilscher-deploy
