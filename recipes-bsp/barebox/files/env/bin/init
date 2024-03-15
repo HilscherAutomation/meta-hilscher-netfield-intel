@@ -15,7 +15,7 @@ if [ -e /boot/boot.scr ]; then
 	cp /boot/boot.scr /tmp/boot.scr
 	verify_signature /env/pubkey.dtb /tmp/boot.scr /boot/boot.scr.sig
 	if [ $? -ne 0 ]; then
-		echo "Error verifying signature for ${file}."
+		echo "Error verifying signature for boot.scr"
 		echo "!!! DENYING BOOT !!!"
 		while true; do
 			sleep 1
