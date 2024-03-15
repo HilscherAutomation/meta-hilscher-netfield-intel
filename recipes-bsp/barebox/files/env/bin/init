@@ -1,0 +1,87 @@
+#!/bin/sh
+
+export PATH=/env/bin
+
+#clear screen
+echo -e '\e[2J'
+
+global boot.default
+global linux.bootargs.base
+global linux.bootargs.console
+#linux.bootargs.dyn.* will be cleared at the beginning of boot
+
+if [ -e /boot/boot.scr ]; then
+	# signature verification
+	cp /boot/boot.scr /tmp/boot.scr
+	verify_signature /env/pubkey.dtb /tmp/boot.scr /boot/boot.scr.sig
+	if [ $? -ne 0 ]; then
+		echo "Error verifying signature for boot.scr"
+		echo "!!! DENYING BOOT !!!"
+		while true; do
+			sleep 1
+		done
+	else
+		echo "Executing bootscript"
+		source /tmp/boot.scr
+	fi
+
+fi
+
+global.boot.default=default
+
+mkdir /system
+mount /dev/disk0.system /system
+
+mkdir -p /tmp/menu
+echo -o /tmp/menu/title "Boot Menu"
+
+numentries=0
+for file in boot.cfg aboot.cfg; do
+	if [ -e "/system/${file}" ]; then
+		verify_signature /env/pubkey.dtb /system/${file} /system/${file}.sig
+		if [ $? -eq 0 ]; then
+			# parse file and add menu item
+			load_vars /system/${file}
+
+			mkdir -p /tmp/menu/${file}
+			echo -o /tmp/menu/${file}/title "${description}"
+
+			echo -o /tmp/menu/${file}/action "#!/bin/sh"
+			bootcfg="LABEL=system/${file}"
+			echo -a /tmp/menu/${file}/action "global.bootm.image=\"/system/${kernel}\""
+			echo -a /tmp/menu/${file}/action "global.linux.bootargs.base=\"overlays=${overlaytargets} bootCfg=${bootcfg} rootflags=noatime overlayflags=noatime,discard ro rootwait rootdelay=1 roottimeout=10 reboot=efi,warm no_ima loglevel=4 acpi_enforce_resources=lax\""
+			echo -a /tmp/menu/${file}/action "boot"
+
+			if [ $numentries -eq 0 ]; then
+				# Remember defaults
+				global.bootm.image="/system/${kernel}"
+				global.linux.bootargs.base="overlays=${overlaytargets} bootCfg=${bootcfg} @KERNEL_CMDLINE@"
+			fi
+
+			let "numentries" "numentries++"
+		fi
+	fi
+done
+
+if [ -e /env/bin/debug ]; then
+	source /env/bin/debug
+fi
+
+if [ $numentries -eq 0 ]; then
+	echo "NO BOOTABLE IMAGE FOUND, RECOVERY REQUIRED!!!"
+	while true; do
+		sleep 1
+	done
+fi
+
+echo "Press any key for boot menu."
+timeout -a 2 -v key
+autoboot="$?"
+
+if [ "$autoboot" = 0 ]; then
+        boot
+fi
+
+while true; do
+	menutree -m /tmp/menu/
+done

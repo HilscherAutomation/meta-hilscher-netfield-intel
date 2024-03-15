@@ -1,0 +1,32 @@
+From 9c573831beb5ef2ee06b119e39bc3d2a889b3162 Mon Sep 17 00:00:00 2001
+From: Michael Trensch <mtrensch@hilscher.com>
+Date: Thu, 8 Feb 2024 09:10:13 +0100
+Subject: [PATCH 3/4] EFI: Disable default environment
+
+---
+ common/efi/payload/init.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/common/efi/payload/init.c b/common/efi/payload/init.c
+index 83cdbfd37a..ae0c028487 100644
+--- a/common/efi/payload/init.c
++++ b/common/efi/payload/init.c
+@@ -211,6 +211,7 @@ extern char image_base[];
+ extern initcall_t __barebox_initcalls_start[], __barebox_early_initcalls_end[],
+ 		  __barebox_initcalls_end[];
+ 
++#if 0
+ static int efi_init(void)
+ {
+ 	char *env;
+@@ -223,6 +224,7 @@ static int efi_init(void)
+ 	return 0;
+ }
+ device_initcall(efi_init);
++#endif
+ 
+ /**
+  * efi-main - Entry point for EFI images
+-- 
+2.25.1
+

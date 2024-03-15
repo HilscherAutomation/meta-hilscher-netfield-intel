@@ -15,7 +15,7 @@ IMAGE_INSTALL:append:niot-e-vm-en = " open-vm-tools"
 CONVERSION_CMD:qcow2 = "qemu-img convert -O qcow2 ${IMAGE_NAME}${IMAGE_NAME_SUFFIX}.${type} ${IMAGE_NAME}${IMAGE_NAME_SUFFIX}.${type}.qcow2 && \
                         qemu-img resize ${IMAGE_NAME}${IMAGE_NAME_SUFFIX}.${type}.qcow2 ${OVA_DISKIMAGE_SIZE}"
 
-do_image_wic[depends] += "u-boot:do_deploy"
+do_image_wic[depends] += "barebox:do_deploy"
 
 hd_path_squashfs = "${HDEPLOY_PATH_EXTRAS}/base_image"
 

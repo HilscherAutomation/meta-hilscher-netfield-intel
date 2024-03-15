@@ -1,0 +1,7 @@
+#!/bin/sh
+
+global.bootm.image="/boot/Image"
+global.linux.bootargs.base="root=LABEL=RECOVERY ro rootwait rootdelay=1 roottimeout=10 reboot=efi,warm no_ima loglevel=4 acpi_enforce_resources=lax"
+
+echo "Booting ${global.bootm.image}"
+bootm

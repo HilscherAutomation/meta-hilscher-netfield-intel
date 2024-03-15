@@ -1,0 +1,138 @@
+From 389db1f7c0fb5b9fe7e832bf1eb2ca62a1c3b251 Mon Sep 17 00:00:00 2001
+From: Michael Trensch <mtrensch@hilscher.com>
+Date: Mon, 12 Feb 2024 08:35:39 +0100
+Subject: [PATCH 4/4] Add command to load variables from file (boot.cfg)
+
+---
+ commands/Kconfig     | 14 +++++++++
+ commands/Makefile    |  1 +
+ commands/load_vars.c | 71 ++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 86 insertions(+)
+ create mode 100644 commands/load_vars.c
+
+diff --git a/commands/Kconfig b/commands/Kconfig
+index cddcaff10f..89799d0d26 100644
+--- a/commands/Kconfig
++++ b/commands/Kconfig
+@@ -527,6 +527,20 @@ config CMD_LOADY
+ 		  -b BAUD	baudrate for download (default: console baudrate
+ 		  -t NAME	console name to use (default: current)
+ 
++config CMD_LOAD_VARS
++	depends on CONSOLE_FULL
++	tristate
++	prompt "load_vars"
++	help
++	  Allows loading variable files into current environment
++
++	  load_vars - load key=val typed text files as variables into current env
++
++	  Usage: load_vars [-n] vars_file
++
++	  Options:
++		-n	Dry run (only show what would be imported
++
+ 
+ config CMD_RESET
+ 	tristate
+diff --git a/commands/Makefile b/commands/Makefile
+index dcda891c93..cbea8d229e 100644
+--- a/commands/Makefile
++++ b/commands/Makefile
+@@ -8,6 +8,7 @@ obj-$(CONFIG_CMD_UIMAGE)	+= uimage.o
+ obj-$(CONFIG_CMD_LOADB)		+= loadb.o
+ obj-$(CONFIG_CMD_LOADY)		+= loadxy.o
+ obj-$(CONFIG_CMD_LOADS)		+= loads.o
++obj-$(CONFIG_CMD_LOAD_VARS)		+= load_vars.o
+ obj-$(CONFIG_CMD_ECHO)		+= echo.o
+ obj-$(CONFIG_CMD_MD)		+= md.o
+ obj-$(CONFIG_CMD_MM)		+= mm.o
+diff --git a/commands/load_vars.c b/commands/load_vars.c
+new file mode 100644
+index 0000000000..2db4a63801
+--- /dev/null
++++ b/commands/load_vars.c
+@@ -0,0 +1,80 @@
++#include <common.h>
++#include <command.h>
++#include <getopt.h>
++#include <errno.h>
++#include <fs.h>
++#include <libfile.h>
++#include <environment.h>
++
++static int do_load_vars(int argc, char *argv[])
++{
++	int opt;
++	int dry_run = 0;
++	char *vars_file = NULL;
++	char *line;
++	size_t vars_file_len;
++
++	while ((opt = getopt(argc, argv, "n")) > 0) {
++		switch(opt) {
++		case 'n':
++			dry_run = 1;
++			break;
++		default:
++			return COMMAND_ERROR_USAGE;
++		}
++	}
++
++	vars_file = read_file(argv[optind], &vars_file_len);
++	if(!vars_file) {
++		printf("Error reading variables file %s\n", argv[optind]);
++		return COMMAND_ERROR_USAGE;
++	}
++
++	line = vars_file;
++	while(line) {
++		char *next_line = strchr(line, '\n');
++		char *sep;
++		if(NULL != next_line) {
++			*next_line = 0;
++		}
++
++		sep = strchr(line, '=');
++		if(sep) {
++			const char *key = line;
++			char *val = sep + 1;
++
++			*sep = 0;
++			if(strcmp(key, "overlaytargets") == 0) {
++				// We need to convert space separated list to comma separated
++				int len = strlen(val);
++				for(int tmp = 0; tmp < len; tmp++) {
++					if(val[tmp] == ' ')
++						val[tmp] = ',';
++				}
++			}
++			if(dry_run) {
++				printf("%s: Setting '%s' to '%s'\n", __func__, key, val);
++			} else {
++				setenv(key, val);
++			}
++		}
++
++		if(NULL != next_line) {
++			line = next_line + 1;
++		} else {
++			line = NULL;
++		}
++	}
++
++	if(!vars_file)
++		free(vars_file);
++
++	return 0;
++}
++
++BAREBOX_CMD_START(load_vars)
++	.cmd = do_load_vars,
++	BAREBOX_CMD_DESC("Load variable from a file into local environment.")
++	BAREBOX_CMD_OPTS("[-n] vars_file")
++	BAREBOX_CMD_GROUP(CMD_GRP_FILE)
++BAREBOX_CMD_END
+-- 
+2.25.1
+
