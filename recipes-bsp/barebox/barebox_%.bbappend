@@ -116,7 +116,7 @@ python do_generate_verification_keys() {
 }
 
 python() {
-    bb.build.addtask('do_generate_verification_keys', 'do_configure', 'do_unpack do_prepare_recipe_sysroot', d)
+    bb.build.addtask('do_generate_verification_keys', 'do_configure', 'do_unpack do_prepare_recipe_sysroot do_populate_public_key', d)
 }
 
 do_deploy:append() {
