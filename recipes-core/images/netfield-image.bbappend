@@ -9,7 +9,7 @@ IMAGE_INSTALL:remove = "kernel-initramfs kernel-image kernel-image-bzimage"
 
 DEPENDS:remove = "grub-efi"
 
-IMAGE_FSTYPES:append:niot-e-vm-en = " ova wic.qcow2"
+IMAGE_FSTYPES:append:niot-e-vm-en = " ova vhdx wic.qcow2"
 # Install open-vm-tools for better VMWare integration
 IMAGE_INSTALL:append:niot-e-vm-en = " open-vm-tools"
 CONVERSION_CMD:qcow2 = "qemu-img convert -O qcow2 ${IMAGE_NAME}${IMAGE_NAME_SUFFIX}.${type} ${IMAGE_NAME}${IMAGE_NAME_SUFFIX}.${type}.qcow2 && \

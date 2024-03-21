@@ -6,7 +6,7 @@ KERNEL_FEATURES:append:niot-e-vm-en = " cfg/vmware-guest.scc cfg/virtio.scc"
 
 SRC_URI:append = " file://enable_hidraw.cfg"
 SRC_URI:append:netfield-compact-x86c = " file://intel_gbe.cfg"
-SRC_URI:append:niot-e-vm-en = " file://vm_fusion_lan.cfg"
+SRC_URI:append:niot-e-vm-en = " file://vm_fusion_lan.cfg file://enable_hyperv.cfg"
 
 inherit uefisign sign-wrapper
 
