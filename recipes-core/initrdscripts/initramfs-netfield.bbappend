@@ -5,6 +5,8 @@ SRC_URI:append = " \
     ${@'file://install_uefi_keys file://pk.auth file://kek.auth file://db.auth' if d.getVar('INSTALL_UEFI_KEYS', True) == '1' else ''} \
 "
 
+RDEPENDS:${PN}-platform-init:append:netfield-unity = " adv-nct6106d-gpio-driver"
+
 RDEPENDS:${PN}-platform-init:append = " efitools util-linux-mount"
 do_install:append() {
     install -d ${D}${bindir}
