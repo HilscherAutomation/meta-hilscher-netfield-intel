@@ -5,7 +5,7 @@ platform_init_enabled() {
 }
 
 platform_init_run() {
-	[ -x "install_uefi_keys" ] &&install_uefi_keys
+	command -v install_uefi_keys > /dev/null && install_uefi_keys
 	# We need the pub key loader to access the certificate
 	load_kernel_module pub-key-loader
 
