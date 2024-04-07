@@ -10,7 +10,7 @@ find_nct6106d_device()
 	base=-1
 
 	for gc in sys/class/gpio/gpiochip*; do
-		driver=$(basename $(readlink -f "${gc}"/device/driver))
+		driver=$(basename "$(readlink -f "${gc}"/device/driver)")
 		label=$(cat "${gc}"/label)
 		if [ "$driver" = "gpio-nct6106d" ]; then
 			if [ "$label" = "$expected_label" ]; then
