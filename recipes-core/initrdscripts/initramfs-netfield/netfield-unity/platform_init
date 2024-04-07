@@ -34,7 +34,8 @@ export_gpio()
 	while [ "$idx" -lt "$count" ]; do
 		echo "$((base+idx))" > /sys/class/gpio/export
 		echo "$direction" > /sys/class/gpio/gpio$((base+idx))/direction
-		ln -s /sys/class/gpio/gpio$((base+idx))/value  /var/platform/"${prefix}""${idx}"
+		test "$count" -gt 1 && suffix="${idx}" || suffix=""
+		ln -s /sys/class/gpio/gpio$((base+idx))/value  /var/platform/"${prefix}""${suffix}"
 		__debug "Exporting gpio${idx} as ${prefix}${idx}"
 		idx=$((idx+1))
 	done
@@ -68,5 +69,14 @@ platform_init_run() {
 	else
 		# Export and link GPIOs
 		export_gpio "out_do" "$gpiobase" 8 "low"
+	fi
+
+	gpiobase=$(find_nct6106d_device "GPIO6")
+	if [ "$gpiobase" -eq -1 ]; then
+		echo "Error finding bus extender for gpio-controlled RUN LED"
+	else
+		# Export and link GPIO 65 - function of the rest of the GPIOs
+		# on this bus is undocumented
+		export_gpio "led_run_green" 65 1 "low"
 	fi
 }
