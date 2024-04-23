@@ -17,13 +17,6 @@ SRCREV_meta ?= "328b31a095c93537e53e4581cb0b8b0433bfa40c"
 
 SRC_URI += "file://enable_efiruntime_on_rt.patch"
 SRC_URI += "file://enable_preempt_rt.cfg \
-            file://baytrail.cfg  \
-            file://rtl8723be.cfg \
-            file://efi_stub.cfg  \
-            file://kpti.cfg      \
-            file://retpoline.cfg \
-            file://uio.cfg       \
-            file://ath10k.cfg    \
             file://allow_updating_microcode_from_bundled_initramfs.patch"
 
 do_kernel_configme:append() {

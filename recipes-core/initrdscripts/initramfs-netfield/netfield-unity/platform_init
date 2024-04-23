@@ -1,0 +1,82 @@
+#!/bin/sh
+
+platform_init_enabled() {
+	return 0
+}
+
+find_nct6106d_device()
+{
+	expected_label="$1"
+	base=-1
+
+	for gc in sys/class/gpio/gpiochip*; do
+		driver=$(basename "$(readlink -f "${gc}"/device/driver)")
+		label=$(cat "${gc}"/label)
+		if [ "$driver" = "gpio-nct6106d" ]; then
+			if [ "$label" = "$expected_label" ]; then
+				base=$(cat "$gc"/base)
+				break
+			fi
+		fi
+	done
+
+	echo "$base"
+}
+
+export_gpio()
+{
+	prefix=$1
+	base=$2
+	count=$3
+	direction=$4
+
+	idx=0
+	while [ "$idx" -lt "$count" ]; do
+		echo "$((base+idx))" > /sys/class/gpio/export
+		echo "$direction" > /sys/class/gpio/gpio$((base+idx))/direction
+		test "$count" -gt 1 && suffix="${idx}" || suffix=""
+		ln -s /sys/class/gpio/gpio$((base+idx))/value  /var/platform/"${prefix}""${suffix}"
+		__debug "Exporting gpio${idx} as ${prefix}${idx}"
+		idx=$((idx+1))
+	done
+}
+
+platform_init_run() {
+	command -v install_uefi_keys > /dev/null && install_uefi_keys
+	# We need the pub key loader to access the certificate
+	load_kernel_module pub-key-loader
+
+	__debug "Loading platform devices / drivers ..."
+	load_kernel_module gpio-nct6106d
+
+	__debug "Creating platform symlinks ..."
+	# Taken from AdvLinux TU user Manual V4.0
+	# DI=/sys/class/gpio/gpio30-37
+	# DO=/sys/class/gpio/gpio40-47
+
+	# Find NCT6106 device
+	gpiobase=$(find_nct6106d_device "GPIO3")
+	if [ "$gpiobase" -eq -1 ]; then
+		echo "Error finding bus extender for digital inputs"
+	else
+		# Export and link GPIOs
+		export_gpio "in_di" "$gpiobase" 8 "in"
+	fi
+
+	gpiobase=$(find_nct6106d_device "GPIO4")
+	if [ "$gpiobase" -eq -1 ]; then
+		echo "Error finding bus extender for digital outputs"
+	else
+		# Export and link GPIOs
+		export_gpio "out_do" "$gpiobase" 8 "low"
+	fi
+
+	gpiobase=$(find_nct6106d_device "GPIO6")
+	if [ "$gpiobase" -eq -1 ]; then
+		echo "Error finding bus extender for gpio-controlled RUN LED"
+	else
+		# Export and link GPIO 65 - function of the rest of the GPIOs
+		# on this bus is undocumented
+		export_gpio "led_run_green" 65 1 "low"
+	fi
+}
