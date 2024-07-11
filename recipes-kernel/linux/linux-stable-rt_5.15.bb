@@ -10,9 +10,13 @@ KMETA = "kernel-meta"
 KCONF_BSP_AUDIT_LEVEL = "2"
 
 LINUX_KERNEL_TYPE = "preempt-rt"
-LINUX_VERSION ?= "5.15.158"
+LINUX_VERSION ?= "5.15.162"
+# Update kernel via patch, as it is not yet available mainline
+SRC_URI:append = " file://linux-5.15.160-to-162.patch"
+addtask do_kernel_version_sanity_check after do_patch
+
 PV = "${LINUX_VERSION}+git${SRCPV}"
-SRCREV_machine ?= "c5c5389dfcb81eda122e18fbfb3342483e8dab53"
+SRCREV_machine ?= "1671cc3c15cc3955367d7f7ab4e2759ac1c798e1"
 SRCREV_meta ?= "a9112e1b2552a7b037b2f90699505e7c1e4d6a34"
 
 SRC_URI += "file://enable_efiruntime_on_rt.patch"
