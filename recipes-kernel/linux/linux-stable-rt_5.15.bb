@@ -31,6 +31,7 @@ do_kernel_configme:append() {
 require recipes-kernel/linux/linux-yocto.inc
 require recipes-kernel/linux/meta-intel-compat-kernel.inc
 require recipes-kernel/linux/netfield-linux.inc
+require cve-exclusions.inc
 
 COMPATIBLE_MACHINE ?= "(intel-corei7-64|intel-core2-32)"
 
