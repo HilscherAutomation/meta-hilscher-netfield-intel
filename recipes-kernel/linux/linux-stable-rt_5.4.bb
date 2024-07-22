@@ -10,10 +10,10 @@ KMETA = "kernel-meta"
 KCONF_BSP_AUDIT_LEVEL = "2"
 
 LINUX_KERNEL_TYPE = "preempt-rt"
-LINUX_VERSION ?= "5.4.209"
+LINUX_VERSION ?= "5.4.278"
 PV = "${LINUX_VERSION}+git${SRCPV}"
-SRCREV_machine ?= "a770236dce7c64534de9f843a9fc2c6b3a24efec"
-SRCREV_meta ?= "028688aaad2b64e353d771ba5505a8666cd01696"
+SRCREV_machine ?= "7779a526bf00deab50f6c3435b2049c3df943e02"
+SRCREV_meta ?= "ee9020d3cb8056f5142b3ddcc209005fc108a79e"
 
 SRC_URI += "file://enable_efiruntime_on_rt.patch"
 SRC_URI += "file://enable_preempt_rt.cfg \
