@@ -14,7 +14,7 @@ SRC_URI:append = " \
     file://uio.cfg           \
     file://gpio_sysfs.cfg    \
 "
-SRC_URI:append:niot-e-tijx-gb = " \
+SRC_URI:append:niot-e-tijcx-gb = " \
     file://baytrail.cfg  \
     file://rtl8723be.cfg \
     file://ath10k.cfg    \
