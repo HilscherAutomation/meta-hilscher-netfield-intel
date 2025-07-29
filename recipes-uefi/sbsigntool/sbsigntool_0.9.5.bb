@@ -10,11 +10,14 @@ LIC_FILES_CHKSUM = "\
 DEPENDS += "binutils openssl gnu-efi util-linux"
 
 SRC_URI = "\
-    gitsm://kernel.googlesource.com/pub/scm/linux/kernel/git/jejb/sbsigntools.git;protocol=https;branch=master \
+    git://git.kernel.org/pub/scm/linux/kernel/git/jejb/sbsigntools.git;protocol=https;name=sbsigntools;branch=master \
+    git://github.com/rustyrussell/ccan.git;protocol=https;destsuffix=${S}/lib/ccan.git;name=ccan;branch=master \
     file://disable_man_generation.patch \
     file://fix_pkcs11_segfault.patch \
 "
-SRCREV="9cfca9fe7aa7a8e29b92fe33ce8433e212c9a8ba"
+SRCREV_sbsigntools  ?= "9cfca9fe7aa7a8e29b92fe33ce8433e212c9a8ba"
+SRCREV_ccan         ?= "b1f28e17227f2320d07fe052a8a48942fe17caa5"
+SRCREV_FORMAT       =  "sbsigntools_ccan"
 
 S = "${WORKDIR}/git"
 
