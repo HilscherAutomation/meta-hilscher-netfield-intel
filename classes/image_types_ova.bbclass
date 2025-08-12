@@ -15,7 +15,7 @@ IMAGE_CMD:ova () {
     rm -rf  ${WORKDIR}/ova-image
     mkdir -p ${WORKDIR}/ova-image
 
-    REAL_IMAGE=$(readlink -f ${IMGDEPLOYDIR}/${IMAGE_BASENAME}-${MACHINE}.wic)
+    REAL_IMAGE=$(readlink -f ${IMGDEPLOYDIR}/${IMAGE_LINK_NAME}.wic)
 
     # Create disk image
     cp ${REAL_IMAGE} ${WORKDIR}/ova-image/img.resized
