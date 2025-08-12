@@ -7,7 +7,7 @@ IMAGE_CMD:vhdx () {
     rm -rf  ${WORKDIR}/vhdx-image
     mkdir -p ${WORKDIR}/vhdx-image
 
-    REAL_IMAGE=$(readlink -f ${IMGDEPLOYDIR}/${IMAGE_BASENAME}-${MACHINE}.wic)
+    REAL_IMAGE=$(readlink -f ${IMGDEPLOYDIR}/${IMAGE_LINK_NAME}.wic)
 
     # Create disk image
     cp ${REAL_IMAGE} ${WORKDIR}/vhdx-image/img.resized
